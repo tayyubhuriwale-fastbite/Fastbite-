@@ -1,0 +1,5 @@
+const menu = [
+  { name: "Pizza", price: 199, category: "veg", img: "https://via.placeholder.com/150" },
+  { name: "Burger", price: 99, category: "veg", img: "https://via.placeholder.com/150" },
+  { name: "Chicken Biryani", price: 149, category: "nonveg", img: "https://via.placeholder.com/150" }
+];
