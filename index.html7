@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Tasty Order Hub</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    🍔 Tasty Order Hub
+  </div>
+  <p>📞 9529785348</p>
+</header>
+
+<div class="controls">
+  <input type="text" id="search" placeholder="Search food...">
+  
+  <select id="filter">
+    <option value="all">All</option>
+    <option value="veg">Veg</option>
+    <option value="nonveg">Non-Veg</option>
+    <option value="drink">Drinks</option>
+  </select>
+</div>
+
+<section id="menu"></section>
+
+<footer>
+  <p>© 2026 Tasty Order Hub | Fast Delivery 🚀</p>
+</footer>
+
+<script src="menu.js"></script>
+<script src="script.js"></script>
+</body>
+</html>
+:root {
+  --main-color: #ff4d4d;
+}
+
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f8f8f8;
+}
+
+header {
+  background: var(--main-color);
+  color: white;
+  padding: 15px;
+  text-align: center;
+}
+
+.logo {
+  font-size: 22px;
+  font-weight: bold;
+}
+
+.controls {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+
+input, select {
+  padding: 8px;
+  border-radius: 5px;
+}
+
+#menu {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  margin: 15px;
+  padding: 10px;
+  width: 220px;
+  border-radius: 12px;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+  transition: 0.3s;
+}
+
+.card:hover {
+  transform: scale(1.05);
+}
+
+button {
+  background: var(--main-color);
+  color: white;
+  border: none;
+  padding: 8px;
+  cursor: pointer;
+  border-radius: 5px;
+}
+
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #222;
+  color: white;
+}
+
+const menu = [
+  { name: "Pizza", price: 199, category: "veg", img: "https://images.unsplash.com/photo-1604382354936-07c5d9983bd3" },
+  { name: "Burger", price: 99, category: "veg", img: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
+  { name: "Chicken Biryani", price: 149, category: "nonveg", img: "https://images.unsplash.com/photo-1604908176997-431e0b6b1d0b" },
+  { name: "Cold Drink", price: 49, category: "drink", img: "https://images.unsplash.com/photo-1581006852262-e4307cf6283a" }
+];
+
+const menuContainer = document.getElementById("menu");
+const searchInput = document.getElementById("search");
+const filter = document.getElementById("filter");
+
+function displayItems(items) {
+  menuContainer.innerHTML = "";
+  
+  items.forEach(item => {
+    const div = document.createElement("div");
+    div.className = "card";
+    div.innerHTML = `
+      <img src="${item.img}" width="100%" height="150" style="object-fit:cover;">
+      <h3>${item.name}</h3>
+      <p>₹${item.price}</p>
+      <button onclick="order('${item.name}')">Order</button>
+    `;
+    menuContainer.appendChild(div);
+  });
+}
+
+function order(item) {
+  const phone = "919529785348";
+  const msg = `Hello, I want to order ${item}`;
+  window.open(`https://wa.me/${phone}?text=${encodeURIComponent(msg)}`);
+}
+
+searchInput.addEventListener("input", update);
+filter.addEventListener("change", update);
+
+function update() {
+  let filtered = menu;
+
+  const searchValue = searchInput.value.toLowerCase();
+  const category = filter.value;
+
+  if (searchValue) {
+    filtered = filtered.filter(i => i.name.toLowerCase().includes(searchValue));
+  }
+
+  if (category !== "all") {
+    filtered = filtered.filter(i => i.category === category);
+  }
+
+  displayItems(filtered);
+}
+
+displayItems(menu);
