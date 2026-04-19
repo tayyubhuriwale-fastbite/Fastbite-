@@ -1,33 +1,157 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>FastBite</title>
-  <link rel="stylesheet" href="style.css">
+<meta charset="UTF-8">
+<title>Food Delivery App</title>
+<style>
+body {
+  font-family: Arial;
+  margin: 0;
+  background: #f4f4f4;
+}
+
+header {
+  background: #ff4d4d;
+  color: white;
+  padding: 15px;
+  text-align: center;
+  font-size: 22px;
+}
+
+.search {
+  padding: 10px;
+  width: 90%;
+  margin: 10px auto;
+  display: block;
+  font-size: 16px;
+}
+
+.container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.card {
+  background: white;
+  width: 250px;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  cursor: pointer;
+  box-shadow: 0 0 5px gray;
+}
+
+.card:hover {
+  transform: scale(1.03);
+}
+
+.menu {
+  display: none;
+  padding: 20px;
+}
+
+.menu-item {
+  background: white;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  display: flex;
+  justify-content: space-between;
+}
+
+button {
+  background: #ff4d4d;
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  cursor: pointer;
+}
+</style>
 </head>
+
 <body>
 
-<header>
-  <h1>🍔 FastBite</h1>
-  <p>📞 9529785348</p>
-</header>
+<header>My Food App 🍔</header>
 
-<div class="controls">
-  <input type="text" id="search" placeholder="Search food...">
-  <select id="filter">
-    <option value="all">All</option>
-    <option value="veg">Veg</option>
-    <option value="nonveg">Non-Veg</option>
-    <option value="drink">Drinks</option>
-  </select>
-</div>
+<input class="search" type="text" id="search" placeholder="Search restaurants..." onkeyup="filterRestaurants()">
 
-<section id="menu"></section>
+<div id="home" class="container"></div>
 
-<footer>
-  <p>© FastBite 🚀</p>
-</footer>
+<div id="menuPage" class="menu"></div>
 
-<script src="menu.js"></script>
-<script src="script.js"></script>
+<script>
+const restaurants = [
+  {
+    name: "Pizza Hub",
+    items: [
+      {name:"Cheese Pizza", price:199},
+      {name:"Veg Pizza", price:149}
+    ]
+  },
+  {
+    name: "Burger King Style",
+    items: [
+      {name:"Veg Burger", price:99},
+      {name:"Cheese Burger", price:129}
+    ]
+  },
+  {
+    name: "Desi Tadka",
+    items: [
+      {name:"Dal Rice", price:80},
+      {name:"Paneer Curry", price:180}
+    ]
+  }
+];
+
+let home = document.getElementById("home");
+let menuPage = document.getElementById("menuPage");
+
+function showRestaurants(data){
+  home.innerHTML = "";
+  data.forEach((r, i)=>{
+    home.innerHTML += `
+      <div class="card" onclick="openMenu(${i})">
+        <h3>${r.name}</h3>
+        <p>Click to view menu</p>
+      </div>
+    `;
+  });
+}
+
+function openMenu(index){
+  home.style.display = "none";
+  menuPage.style.display = "block";
+
+  let r = restaurants[index];
+  menuPage.innerHTML = `<h2>${r.name} Menu</h2>`;
+
+  r.items.forEach(item=>{
+    menuPage.innerHTML += `
+      <div class="menu-item">
+        <span>${item.name} - ₹${item.price}</span>
+        <button onclick="alert('Added to cart: ${item.name}')">Add</button>
+      </div>
+    `;
+  });
+
+  menuPage.innerHTML += `<br><button onclick="goBack()">⬅ Back</button>`;
+}
+
+function goBack(){
+  menuPage.style.display = "none";
+  home.style.display = "flex";
+}
+
+function filterRestaurants(){
+  let value = document.getElementById("search").value.toLowerCase();
+  let filtered = restaurants.filter(r => r.name.toLowerCase().includes(value));
+  showRestaurants(filtered);
+}
+
+showRestaurants(restaurants);
+</script>
+
 </body>
 </html>
