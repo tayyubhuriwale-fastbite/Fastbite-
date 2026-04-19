@@ -131,8 +131,9 @@ function openMenu(index){
     menuPage.innerHTML += `
       <div class="menu-item">
         <span>${item.name} - ₹${item.price}</span>
-        <button onclick="alert('Added to cart: ${item.name}')">Add</button>
-      </div>
+        <button onclick="orderNow('${r.name}','${item.name}',${item.price})">
+  Order Now
+</button>
     `;
   });
 
@@ -152,6 +153,22 @@ function filterRestaurants(){
 
 showRestaurants(restaurants);
 </script>
+<script>
+function orderNow(restaurant, item, price) {
+  let number = "91XXXXXXXXXX"; // apna WhatsApp number
 
+  let msg = `Hello 👋
+I want to place an order:
+
+Restaurant: ${restaurant}
+Item: ${item}
+Price: ₹${price}
+
+Please confirm my order.`;
+
+  let url = "https://wa.me/" + number + "?text=" + encodeURIComponent(msg);
+  window.open(url, "_blank");
+}
+</script>
 </body>
 </html>
