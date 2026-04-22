@@ -66,25 +66,31 @@ header {
   background: rgba(255,255,255,0.2);
   color: white;
 }
+<div class="restaurants">
 
+  <div class="res-card">
+    <h3>Restaurant 1</h3>
+    <p>⭐ 4.5 | Fast Delivery</p>
+  </div>
+
+  <div class="res-card">
+    <h3>Restaurant 2</h3>
+    <p>⭐ 4.3 | Best Quality</p>
+  </div>
+
+  <div class="res-card">
+    <h3>Restaurant 3</h3>
+    <p>⭐ 4.6 | Popular</p>
+  </div>
+
+  <div class="res-card">
+    <h3>Restaurant 4</h3>
+    <p>⭐ 4.4 | Trending</p>
+  </div>
+
+</div>
 /* Stories */
-.stories {
-  display: flex;
-  overflow-x: auto;
-  padding: 10px;
-}
 
-.story {
-  text-align: center;
-  margin: 10px;
-}
-
-.story img {
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  border: 2px solid orange;
-}
 
 /* Speciality cards */
 .offers {
@@ -108,7 +114,17 @@ header {
   opacity: 1;
   transform: translateY(0);
 }
+.restaurants{
+  padding:10px;
+}
 
+.res-card{
+  background: rgba(255,255,255,0.2);
+  margin:10px;
+  padding:15px;
+  border-radius:12px;
+  backdrop-filter: blur(5px);
+}
 </style>
 
 </head>
@@ -130,32 +146,7 @@ header {
 <input class="search" placeholder="Search food...">
 
 <!-- Stories -->
-<div class="stories">
-  <div class="story">
-    <img src="https://picsum.photos/100?1">
-    <p>Pizza</p>
-  </div>
-  <div class="story">
-    <img src="https://picsum.photos/100?2">
-    <p>Burger</p>
-  </div>
-  <div class="story">
-    <img src="https://picsum.photos/100?3">
-    <p>Biryani</p>
-  </div>
-  <div class="story">
-    <img src="https://picsum.photos/100?4">
-    <p>Snacks</p>
-  </div>
-</div>
 
-<!-- Speciality -->
-<div class="offers">
-  <div class="offer-card">🚀 Fast Delivery in 20 mins</div>
-  <div class="offer-card">🍔 Fresh & Hot Food</div>
-  <div class="offer-card">💸 Best Prices Guaranteed</div>
-  <div class="offer-card">📍 Live Order Tracking</div>
-</div>
 
 <script>
 
