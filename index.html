@@ -9,7 +9,8 @@ body{
   margin:0;
   font-family: Arial;
   color:white;
-  transition:0.3s;
+  background-size: cover;
+  background-position: center;
 }
 
 /* header */
@@ -40,7 +41,7 @@ header{
 
 /* cards */
 .card{
-  background: rgba(255,255,255,0.2);
+  background: rgba(0,0,0,0.5);
   margin:10px;
   padding:15px;
   border-radius:10px;
@@ -51,6 +52,8 @@ input{
   width:80%;
   padding:10px;
   margin:10px;
+  border-radius:8px;
+  border:none;
 }
 
 /* button */
@@ -76,28 +79,23 @@ button{
 <div class="row">
 
   <div class="rest" onclick="openRestaurant('Pizza Hub')">
-    <img src="https://source.unsplash.com/100x100/?pizza">
+    <img src="https://picsum.photos/100?1">
     <p>Pizza</p>
   </div>
 
   <div class="rest" onclick="openRestaurant('Burger Town')">
-    <img src="https://source.unsplash.com/100x100/?burger">
+    <img src="https://picsum.photos/100?2">
     <p>Burger</p>
   </div>
 
   <div class="rest" onclick="openRestaurant('Biryani House')">
-    <img src="https://source.unsplash.com/100x100/?biryani">
+    <img src="https://picsum.photos/100?3">
     <p>Biryani</p>
   </div>
 
   <div class="rest" onclick="openRestaurant('Tandoor Point')">
-    <img src="https://source.unsplash.com/100x100/?tandoori">
+    <img src="https://picsum.photos/100?4">
     <p>Tandoor</p>
-  </div>
-
-  <div class="rest" onclick="openRestaurant('Snack Zone')">
-    <img src="https://source.unsplash.com/100x100/?snacks">
-    <p>Snacks</p>
   </div>
 
 </div>
@@ -120,6 +118,7 @@ button{
 <button onclick="goBack()">⬅ Back</button>
 
 <h2 id="itemName"></h2>
+<img src="IMG_20260422_094342.png" style="width:90%; border-radius:10px;">
 <p id="itemPrice"></p>
 <p>⏱ Delivery in 20-30 mins</p>
 
@@ -153,12 +152,19 @@ function show(page){
   document.getElementById(page).style.display="block";
   current=page;
 
-  // background change
-  document.body.style.background =
-    page=="home" ? "url('file_00000000342071faa4305e3bf046e775.png') center/cover" :
-    page=="restaurant" ? "url('https://source.unsplash.com/800x600/?restaurant') center/cover" :
-    page=="item" ? "url('https://source.unsplash.com/800x600/?food') center/cover" :
-    "url('https://source.unsplash.com/800x600/?delivery') center/cover";
+  // backgrounds
+  if(page=="home"){
+    document.body.style.background="black";
+  }
+  else if(page=="restaurant"){
+    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
+  }
+  else if(page=="item"){
+    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
+  }
+  else{
+    document.body.style.background="url('delivery-staff-ride-motorcycles-shopping-concept_1150-34879.jpg') center/cover";
+  }
 }
 
 function openRestaurant(name){
@@ -207,6 +213,8 @@ function goBack(){
   else if(current=="item") show("restaurant");
   else if(current=="restaurant") show("home");
 }
+
+show("home");
 
 </script>
 
