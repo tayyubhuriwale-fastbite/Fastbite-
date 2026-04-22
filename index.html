@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Food App</title>
+<title>FastBite</title>
 
 <style>
 
@@ -54,12 +54,14 @@ body::before {
 /* Header */
 header {
   text-align: center;
-  font-size: 30px;
+  font-size: 28px;
   padding: 20px;
   font-weight: bold;
-  background: linear-gradient(90deg, red, orange, yellow);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+}
+
+.logo {
+  font-size: 30px;
+  margin-right: 8px;
 }
 
 /* Inputs */
@@ -73,101 +75,51 @@ header {
   background: rgba(255,255,255,0.2);
   color: white;
 }
-<div class="stories">
 
-  <div class="story">
-    <img src="https://picsum.photos/100?1">
-    <p>Pizza</p>
-  </div>
-
-  <div class="story">
-    <img src="https://picsum.photos/100?2">
-    <p>Burger</p>
-  </div>
-
-  <div class="story">
-    <img src="https://picsum.photos/100?3">
-    <p>Biryani</p>
-  </div>
-
-  <div class="story">
-    <img src="https://picsum.photos/100?4">
-    <p>Snacks</p>
-  </div>
-
-</div>
-/* Cards */
-.container {
+/* Stories */
+.stories {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  overflow-x: auto;
+  padding: 10px;
 }
 
-.card {
-  width: 90%;
+.story {
+  text-align: center;
   margin: 10px;
+}
+
+.story img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  border: 2px solid orange;
+}
+
+/* Speciality cards */
+.offers {
+  padding: 10px;
+}
+
+.offer-card {
+  background: rgba(255,255,255,0.2);
+  margin: 15px;
   padding: 20px;
   border-radius: 15px;
-  background: rgba(255,255,255,0.15);
-  backdrop-filter: blur(8px);
+  text-align: center;
+  font-size: 18px;
+  animation: slideUp 0.8s ease forwards;
 }
 
-/* Button */
-button {
-  background: linear-gradient(45deg, red, orange);
-  border: none;
-  padding: 10px 15px;
-  color: white;
-  border-radius: 8px;
-}
-.logo{
-  font-size: 30px;
-  margin-right: 8px;
-}
-.stories{
-  display:flex;
-  overflow-x:auto;
+@keyframes slideUp {
+  from {transform: translateY(50px); opacity:0;}
+  to {transform: translateY(0); opacity:1;}
 }
 
-.story img{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-}
+.offer-card:nth-child(1){animation-delay:0.2s;}
+.offer-card:nth-child(2){animation-delay:0.4s;}
+.offer-card:nth-child(3){animation-delay:0.6s;}
+.offer-card:nth-child(4){animation-delay:0.8s;}
 
-.story{
-  text-align:center;
-  margin:10px;
-}
-
-.story img{
-  width:70px;
-  height:70px;
-  border-radius:50%;
-  border:2px solid orange;
-}
-  .offers{
-  padding:10px;
-}
-
-.offer-card{
-  background: rgba(255,255,255,0.2);
-  margin:10px;
-  padding:15px;
-  border-radius:10px;
-}
-  .offers{
-  padding:10px;
-}
-
-.banner{
-  width:90%;
-  height:180px;
-  object-fit:cover;
-  border-radius:15px;
-  margin:10px auto;
-  display:block;
-}a
 </style>
 
 </head>
@@ -179,27 +131,42 @@ button {
   <img src="file_00000000342071faa4305e3bf046e775.png">
 </div>
 
+<!-- Header -->
 <header>
-  <span class="logo">🍟</span>
+  <span class="logo">🧸</span>
   Welcome to FastBite
 </header>
 
+<!-- Search -->
 <input class="search" placeholder="Search food...">
 
-<div class="container">
-
-
-  <div class="offers">
-
-  <img src="https://picsum.photos/600/250?food1" class="banner">
-  <img src="https://picsum.photos/600/250?food2" class="banner">
-  <img src="https://picsum.photos/600/250?food3" class="banner">
-
+<!-- Stories -->
+<div class="stories">
+  <div class="story">
+    <img src="https://picsum.photos/100?1">
+    <p>Pizza</p>
+  </div>
+  <div class="story">
+    <img src="https://picsum.photos/100?2">
+    <p>Burger</p>
+  </div>
+  <div class="story">
+    <img src="https://picsum.photos/100?3">
+    <p>Biryani</p>
+  </div>
+  <div class="story">
+    <img src="https://picsum.photos/100?4">
+    <p>Snacks</p>
+  </div>
 </div>
-</div>
-  
-</div>
 
+<!-- Speciality Section -->
+<div class="offers">
+  <div class="offer-card">🚀 Fast Delivery in 20 mins</div>
+  <div class="offer-card">🍔 Fresh & Hot Food</div>
+  <div class="offer-card">💸 Best Prices Guaranteed</div>
+  <div class="offer-card">📍 Live Order Tracking</div>
+</div>
 
 <script>
 
@@ -209,30 +176,6 @@ window.onload = function() {
     document.getElementById("splash").style.display = "none";
   }, 1000);
 };
-
-/* Rider system */
-let riders = ["Rider 1", "Rider 2", "Rider 3", "Rider 4"];
-
-function placeOrder() {
-  let address = document.getElementById("address").value;
-
-  if(address === "") {
-    alert("Enter address");
-    return;
-  }
-
-  let rider = riders[Math.floor(Math.random() * riders.length)];
-  let time = Math.floor(Math.random() * 20) + 15;
-
-  document.body.innerHTML = `
-    <div style="text-align:center; padding:50px;">
-      <h1>🎉 Order Placed!</h1>
-      <h2>${rider} is on the way 🚴</h2>
-      <h3>Delivery in ${time} mins</h3>
-      <p>${address}</p>
-    </div>
-  `;
-}
 
 </script>
 
