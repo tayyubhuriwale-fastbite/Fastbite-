@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastBite</title>
+<title>Food App</title>
 
 <style>
 
@@ -29,12 +29,12 @@ body::before {
   z-index: -1;
 }
 
-/* 🔥 Splash Screen */
+/* Splash */
 #splash {
   position: fixed;
   width: 100%;
   height: 100%;
-  background: rgba(0,0,0,0.9);
+  background: black;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -42,42 +42,39 @@ body::before {
 }
 
 #splash img {
-  width: 250px;
+  width: 220px;
   animation: zoom 1s ease;
 }
 
 @keyframes zoom {
-  0% { transform: scale(0.5); opacity: 0; }
-  100% { transform: scale(1); opacity: 1; }
+  from {transform: scale(0.5); opacity: 0;}
+  to {transform: scale(1); opacity: 1;}
 }
 
-/* 🌈 Heading */
+/* Header */
 header {
   text-align: center;
-  font-size: 32px;
-  font-weight: bold;
+  font-size: 30px;
   padding: 20px;
+  font-weight: bold;
   background: linear-gradient(90deg, red, orange, yellow);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: cursive;
 }
 
-/* 🔍 Search bar */
+/* Inputs */
 .search {
-  padding: 12px;
   width: 90%;
   margin: 10px auto;
+  padding: 12px;
   display: block;
   border-radius: 10px;
   border: none;
-  font-size: 16px;
   background: rgba(255,255,255,0.2);
   color: white;
-  backdrop-filter: blur(5px);
 }
 
-/* 📦 Cards */
+/* Cards */
 .container {
   display: flex;
   flex-direction: column;
@@ -85,81 +82,93 @@ header {
 }
 
 .card {
-  background: rgba(255,255,255,0.15);
   width: 90%;
   margin: 10px;
   padding: 20px;
   border-radius: 15px;
-  color: white;
+  background: rgba(255,255,255,0.15);
   backdrop-filter: blur(8px);
-  box-shadow: 0 0 10px rgba(255,165,0,0.5);
 }
 
-/* 🔘 Button */
+/* Button */
 button {
   background: linear-gradient(45deg, red, orange);
-  color: white;
   border: none;
   padding: 10px 15px;
+  color: white;
   border-radius: 8px;
-  cursor: pointer;
 }
 
 </style>
-
-<script>
-function orderNow(item) {
-  let number = "919529785348"; // 👈 apna number daal
-  let msg = "Hello FastBite! I want to order: " + item;
-  let url = "https://wa.me/" + number + "?text=" + encodeURIComponent(msg);
-  window.open(url, '_blank');
-}
-</script>
 
 </head>
 
 <body>
 
-<!-- 🔥 Splash Screen -->
+<!-- Splash -->
 <div id="splash">
   <img src="file_00000000342071faa4305e3bf046e775.png">
 </div>
 
-<header>Welcome to FastBite 🍔</header>
+<header>Welcome 🍔</header>
 
-<input type="text" class="search" placeholder="Search food...">
+<input class="search" placeholder="Search food...">
+<input id="address" class="search" placeholder="Enter your address...">
 
 <div class="container">
 
   <div class="card">
     <h3>Pizza 🍕</h3>
-    <button onclick="orderNow('Pizza')">Order Now</button>
+    <p>₹199</p>
   </div>
 
   <div class="card">
     <h3>Burger 🍔</h3>
-    <button onclick="orderNow('Burger')">Order Now</button>
+    <p>₹149</p>
   </div>
 
   <div class="card">
     <h3>Biryani 🍛</h3>
-    <button onclick="orderNow('Biryani')">Order Now</button>
+    <p>₹249</p>
   </div>
 
 </div>
 
-<!-- 🔥 Splash Script -->
+<button onclick="placeOrder()" style="margin:20px;">Place Order</button>
+
 <script>
+
+/* Splash hide */
 window.onload = function() {
   setTimeout(() => {
-    let splash = document.getElementById("splash");
-    splash.style.opacity = "0";
-    splash.style.transition = "0.5s";
-    setTimeout(() => {
-      splash.style.display = "none";
-    }, 500);
+    document.getElementById("splash").style.display = "none";
   }, 1000);
 };
+
+/* Rider system */
+let riders = ["Rider 1", "Rider 2", "Rider 3", "Rider 4"];
+
+function placeOrder() {
+  let address = document.getElementById("address").value;
+
+  if(address === "") {
+    alert("Enter address");
+    return;
+  }
+
+  let rider = riders[Math.floor(Math.random() * riders.length)];
+  let time = Math.floor(Math.random() * 20) + 15;
+
+  document.body.innerHTML = `
+    <div style="text-align:center; padding:50px;">
+      <h1>🎉 Order Placed!</h1>
+      <h2>${rider} is on the way 🚴</h2>
+      <h3>Delivery in ${time} mins</h3>
+      <p>${address}</p>
+    </div>
+  `;
+}
+
 </script>
 
 </body>
