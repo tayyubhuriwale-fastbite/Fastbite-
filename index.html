@@ -99,21 +99,42 @@ header {
 .offers {
   padding: 10px;
 }
-
-.offer-card {
+.offer-card{
   background: rgba(255,255,255,0.2);
   margin: 15px;
   padding: 20px;
   border-radius: 15px;
   text-align: center;
   font-size: 18px;
-  animation: slideUp 0.8s ease forwards;
+
+  opacity: 0;
+  transform: translateY(60px) scale(0.9);
+
+  animation: smoothUp 0.7s ease forwards;
 }
 
-@keyframes slideUp {
-  from {transform: translateY(50px); opacity:0;}
-  to {transform: translateY(0); opacity:1;}
+/* animation */
+@keyframes smoothUp{
+  0%{
+    opacity:0;
+    transform: translateY(60px) scale(0.9);
+  }
+  60%{
+    opacity:1;
+    transform: translateY(-5px) scale(1.02);
+  }
+  100%{
+    opacity:1;
+    transform: translateY(0) scale(1);
+  }
 }
+
+/* delay (one by one entry) */
+.offer-card:nth-child(1){animation-delay:0.3s;}
+.offer-card:nth-child(2){animation-delay:0.6s;}
+.offer-card:nth-child(3){animation-delay:0.9s;}
+.offer-card:nth-child(4){animation-delay:1.2s;}
+
 
 .offer-card:nth-child(1){animation-delay:0.2s;}
 .offer-card:nth-child(2){animation-delay:0.4s;}
