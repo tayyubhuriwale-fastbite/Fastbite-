@@ -73,7 +73,29 @@ header {
   background: rgba(255,255,255,0.2);
   color: white;
 }
+<div class="stories">
 
+  <div class="story">
+    <img src="https://picsum.photos/100?1">
+    <p>Pizza</p>
+  </div>
+
+  <div class="story">
+    <img src="https://picsum.photos/100?2">
+    <p>Burger</p>
+  </div>
+
+  <div class="story">
+    <img src="https://picsum.photos/100?3">
+    <p>Biryani</p>
+  </div>
+
+  <div class="story">
+    <img src="https://picsum.photos/100?4">
+    <p>Snacks</p>
+  </div>
+
+</div>
 /* Cards */
 .container {
   display: flex;
@@ -102,6 +124,34 @@ button {
   font-size: 30px;
   margin-right: 8px;
 }
+  .stories{
+  display:flex;
+  overflow-x:auto;
+  padding:10px;
+}
+
+.story{
+  text-align:center;
+  margin:10px;
+}
+
+.story img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  border:2px solid orange;
+}
+  .offers{
+  padding:10px;
+}
+
+.offer-card{
+  background: rgba(255,255,255,0.2);
+  margin:10px;
+  padding:15px;
+  border-radius:10px;
+}
+  
 </style>
 
 </head>
@@ -119,25 +169,18 @@ button {
 </header>
 
 <input class="search" placeholder="Search food...">
-<input id="address" class="search" placeholder="Enter your address...">
 
 <div class="container">
 
-  <div class="card">
-    <h3>Pizza 🍕</h3>
-    <p>₹199</p>
-  </div>
+  
+<div class="offers">
 
-  <div class="card">
-    <h3>Burger 🍔</h3>
-    <p>₹149</p>
-  </div>
-
-  <div class="card">
-    <h3>Biryani 🍛</h3>
-    <p>₹249</p>
-  </div>
-
+  <div class="offer-card">🔥 50% OFF on Pizza</div>
+  <div class="offer-card">🍔 Buy 1 Get 1 Free</div>
+  <div class="offer-card">🚚 Free Delivery Today</div>
+  
+</div>
+  
 </div>
 
 <button onclick="placeOrder()" style="margin:20px;">Place Order</button>
