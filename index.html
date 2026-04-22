@@ -9,22 +9,24 @@ body{
   margin:0;
   font-family: Arial;
   color:white;
-  background: url('IMG_20260422_094342.png') center/cover no-repeat;
+  background-size: cover;
 }
 
 /* header */
 header{
-  text-align:center;
-  font-size:26px;
-  padding:15px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  padding:10px;
   background:linear-gradient(red,orange);
 }
 
-/* offers */
-.offers{
-  padding:10px;
-  background: rgba(0,0,0,0.5);
-  text-align:center;
+/* cart icon */
+#cartBtn{
+  background:white;
+  color:black;
+  padding:5px 10px;
+  border-radius:20px;
 }
 
 /* restaurant row */
@@ -33,23 +35,23 @@ header{
   overflow-x:auto;
   padding:10px;
 }
+
 .rest{
-  margin:10px;
   text-align:center;
+  margin:10px;
 }
 .rest img{
   width:90px;
-  height:90px;
   border-radius:50%;
 }
 
-/* food list */
+/* food */
 .food{
   display:flex;
   background: rgba(0,0,0,0.6);
   margin:10px;
-  border-radius:10px;
   padding:10px;
+  border-radius:10px;
 }
 
 .food img{
@@ -61,6 +63,24 @@ header{
   margin-left:10px;
 }
 
+/* popup */
+#popup{
+  position:fixed;
+  bottom:20px;
+  left:50%;
+  transform:translateX(-50%);
+  background:black;
+  padding:10px;
+  display:none;
+}
+
+/* input */
+input{
+  width:80%;
+  padding:10px;
+  margin:10px;
+}
+
 button{
   padding:8px;
   border:none;
@@ -69,79 +89,97 @@ button{
   border-radius:6px;
   margin-top:5px;
 }
-
-input{
-  width:80%;
-  padding:10px;
-  margin:10px;
-}
 </style>
-
 </head>
 
 <body>
 
-<header>🍔 Welcome to FastBite</header>
+<header>
+  <span>🍔 FastBite</span>
+  <button id="cartBtn" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button>
+</header>
 
-<!-- OFFERS -->
-<div class="offers">
-  🔥 50% OFF on first order | Free Delivery 🚴
+<!-- HOME -->
+<div id="home">
+  <div class="row">
+    <div class="rest" onclick="openMenu()">
+      <img src="https://picsum.photos/100?1">
+      <p>Menu</p>
+    </div>
+  </div>
 </div>
 
-<!-- RESTAURANTS -->
-<div class="row">
-  <div class="rest"><img src="https://picsum.photos/100?1"><p>Pizza</p></div>
-  <div class="rest"><img src="https://picsum.photos/100?2"><p>Burger</p></div>
-  <div class="rest"><img src="https://picsum.photos/100?3"><p>Biryani</p></div>
-</div>
+<!-- MENU -->
+<div id="menu" style="display:none;">
 
-<!-- FOOD ITEMS -->
 <div class="food">
   <img src="IMG_20260422_094342.png">
   <div class="details">
-    <h3>Pizza 🍕</h3>
-    <p>₹199</p>
-    <p>⭐ 4.3</p>
-
-    <button onclick="addCart('Pizza',199)">Add to Cart</button>
-    <button onclick="orderNow('Pizza',199)">Order Now</button>
+    <h3>Pizza</h3>
+    <p>₹199 | ⭐4.3</p>
+    <button onclick="addCart('Pizza',199)">Add</button>
+    <button onclick="orderNow('Pizza',199)">Order</button>
   </div>
 </div>
 
 <div class="food">
   <img src="IMG_20260422_094342.png">
   <div class="details">
-    <h3>Burger 🍔</h3>
-    <p>₹149</p>
-    <p>⭐ 4.1</p>
-
-    <button onclick="addCart('Burger',149)">Add to Cart</button>
-    <button onclick="orderNow('Burger',149)">Order Now</button>
+    <h3>Burger</h3>
+    <p>₹149 | ⭐4.1</p>
+    <button onclick="addCart('Burger',149)">Add</button>
+    <button onclick="orderNow('Burger',149)">Order</button>
   </div>
 </div>
 
-<div class="food">
-  <img src="IMG_20260422_094342.png">
-  <div class="details">
-    <h3>Biryani 🍛</h3>
-    <p>₹249</p>
-    <p>⭐ 4.5</p>
-
-    <button onclick="addCart('Biryani',249)">Add to Cart</button>
-    <button onclick="orderNow('Biryani',249)">Order Now</button>
-  </div>
 </div>
 
-<!-- CART BUTTON -->
-<button onclick="openCart()" style="margin:20px;">🛒 View Cart</button>
+<!-- ORDER -->
+<div id="order" style="display:none;">
+  <input id="phone" placeholder="Phone">
+  <input id="address" placeholder="Address">
+  <button onclick="confirmOrder()">Place Order</button>
+</div>
+
+<!-- popup -->
+<div id="popup">Added to cart ✔</div>
 
 <script>
 
 let cart=[];
+let current="home";
+
+function show(page){
+  document.getElementById("home").style.display="none";
+  document.getElementById("menu").style.display="none";
+  document.getElementById("order").style.display="none";
+
+  document.getElementById(page).style.display="block";
+  current=page;
+
+  // backgrounds
+  if(page=="home"){
+    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
+  }
+  else if(page=="menu"){
+    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
+  }
+  else{
+    document.body.style.background="url('delivery-staff-ride-motorcycles-shopping-concept_1150-34879.jpg') center/cover";
+  }
+}
+
+function openMenu(){
+  show("menu");
+}
 
 function addCart(name,price){
   cart.push({name,price});
-  alert(name+" added to cart");
+  document.getElementById("count").innerText=cart.length;
+
+  let p=document.getElementById("popup");
+  p.style.display="block";
+  setTimeout(()=>{p.style.display="none"},1000);
 }
 
 function openCart(){
@@ -153,57 +191,44 @@ function openCart(){
   let list="";
   let total=0;
 
-  cart.forEach(item=>{
-    list+=`<p>${item.name} - ₹${item.price}</p>`;
-    total+=item.price;
+  cart.forEach(i=>{
+    list+=`<p>${i.name} ₹${i.price}</p>`;
+    total+=i.price;
   });
 
   document.body.innerHTML=`
-    <h1>🛒 Cart</h1>
+    <h1>Cart</h1>
     ${list}
-    <h2>Total: ₹${total}</h2>
-
-    <input id="phone" placeholder="Phone">
-    <input id="address" placeholder="Address">
-
-    <button onclick="confirmOrder('Cart Order',${total})">Place Order</button>
+    <h2>Total ₹${total}</h2>
+    <button onclick="show('order')">Proceed</button>
   `;
 }
 
 function orderNow(name,price){
-  document.body.innerHTML=`
-    <h2>${name}</h2>
-    <p>₹${price}</p>
-
-    <input id="phone" placeholder="Phone">
-    <input id="address" placeholder="Address">
-
-    <button onclick="confirmOrder('${name}',${price})">Place Order</button>
-  `;
+  cart=[{name,price}];
+  show("order");
 }
 
-function confirmOrder(item,price){
+function confirmOrder(){
   let phone=document.getElementById("phone").value;
   let address=document.getElementById("address").value;
 
   if(phone==""||address==""){
-    alert("Fill all details");
+    alert("Fill details");
     return;
   }
 
   let rider="Rider "+Math.floor(Math.random()*5+1);
-  let time=Math.floor(Math.random()*20)+15;
 
   document.body.innerHTML=`
-    <h1>🎉 Order Placed</h1>
-    <p>${item}</p>
-    <p>Total: ₹${price}</p>
-    <p>📞 ${phone}</p>
-    <p>📍 ${address}</p>
-    <h3>${rider} assigned</h3>
-    <p>Delivery in ${time} mins</p>
+    <h1>Order Placed 🎉</h1>
+    <p>${phone}</p>
+    <p>${address}</p>
+    <p>${rider}</p>
   `;
 }
+
+show("home");
 
 </script>
 
