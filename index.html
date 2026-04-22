@@ -9,40 +9,22 @@ body{
   margin:0;
   font-family: Arial;
   color:white;
-  background-size: cover;
+  background: url('IMG_20260422_094342.png') center/cover no-repeat;
 }
 
 /* header */
 header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
-  padding:10px;
-  background:linear-gradient(red,orange);
+  padding:15px;
+  background:rgba(0,0,0,0.6);
 }
 
-/* cart icon */
-#cartBtn{
+#cart{
   background:white;
   color:black;
   padding:5px 10px;
   border-radius:20px;
-}
-
-/* restaurant row */
-.row{
-  display:flex;
-  overflow-x:auto;
-  padding:10px;
-}
-
-.rest{
-  text-align:center;
-  margin:10px;
-}
-.rest img{
-  width:90px;
-  border-radius:50%;
 }
 
 /* food */
@@ -63,54 +45,32 @@ header{
   margin-left:10px;
 }
 
-/* popup */
-#popup{
-  position:fixed;
-  bottom:20px;
-  left:50%;
-  transform:translateX(-50%);
-  background:black;
-  padding:10px;
-  display:none;
-}
-
-/* input */
-input{
-  width:80%;
-  padding:10px;
-  margin:10px;
-}
-
 button{
-  padding:8px;
+  padding:6px;
   border:none;
   background:red;
   color:white;
   border-radius:6px;
   margin-top:5px;
 }
+
+input{
+  width:80%;
+  padding:10px;
+  margin:10px;
+}
 </style>
+
 </head>
 
 <body>
 
 <header>
-  <span>🍔 FastBite</span>
-  <button id="cartBtn" onclick="openCart()">🛒 Cart (<span id="count">0</span>)</button>
+  <h2>🍔 FastBite</h2>
+  <div id="cart">🛒 <span id="count">0</span></div>
 </header>
 
-<!-- HOME -->
-<div id="home">
-  <div class="row">
-    <div class="rest" onclick="openMenu()">
-      <img src="https://picsum.photos/100?1">
-      <p>Menu</p>
-    </div>
-  </div>
-</div>
-
-<!-- MENU -->
-<div id="menu" style="display:none;">
+<!-- FOOD ITEMS -->
 
 <div class="food">
   <img src="IMG_20260422_094342.png">
@@ -118,7 +78,6 @@ button{
     <h3>Pizza</h3>
     <p>₹199 | ⭐4.3</p>
     <button onclick="addCart('Pizza',199)">Add</button>
-    <button onclick="orderNow('Pizza',199)">Order</button>
   </div>
 </div>
 
@@ -128,88 +87,35 @@ button{
     <h3>Burger</h3>
     <p>₹149 | ⭐4.1</p>
     <button onclick="addCart('Burger',149)">Add</button>
-    <button onclick="orderNow('Burger',149)">Order</button>
   </div>
 </div>
 
+<div class="food">
+  <img src="IMG_20260422_094342.png">
+  <div class="details">
+    <h3>Biryani</h3>
+    <p>₹249 | ⭐4.5</p>
+    <button onclick="addCart('Biryani',249)">Add</button>
+  </div>
 </div>
 
-<!-- ORDER -->
-<div id="order" style="display:none;">
+<!-- ORDER SECTION -->
+<div style="text-align:center;">
   <input id="phone" placeholder="Phone">
   <input id="address" placeholder="Address">
-  <button onclick="confirmOrder()">Place Order</button>
+  <button onclick="placeOrder()">Place Order</button>
 </div>
-
-<!-- popup -->
-<div id="popup">Added to cart ✔</div>
 
 <script>
 
 let cart=[];
-let current="home";
-
-function show(page){
-  document.getElementById("home").style.display="none";
-  document.getElementById("menu").style.display="none";
-  document.getElementById("order").style.display="none";
-
-  document.getElementById(page).style.display="block";
-  current=page;
-
-  // backgrounds
-  if(page=="home"){
-    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
-  }
-  else if(page=="menu"){
-    document.body.style.background="url('IMG_20260422_094342.png') center/cover";
-  }
-  else{
-    document.body.style.background="url('delivery-staff-ride-motorcycles-shopping-concept_1150-34879.jpg') center/cover";
-  }
-}
-
-function openMenu(){
-  show("menu");
-}
 
 function addCart(name,price){
   cart.push({name,price});
   document.getElementById("count").innerText=cart.length;
-
-  let p=document.getElementById("popup");
-  p.style.display="block";
-  setTimeout(()=>{p.style.display="none"},1000);
 }
 
-function openCart(){
-  if(cart.length==0){
-    alert("Cart empty");
-    return;
-  }
-
-  let list="";
-  let total=0;
-
-  cart.forEach(i=>{
-    list+=`<p>${i.name} ₹${i.price}</p>`;
-    total+=i.price;
-  });
-
-  document.body.innerHTML=`
-    <h1>Cart</h1>
-    ${list}
-    <h2>Total ₹${total}</h2>
-    <button onclick="show('order')">Proceed</button>
-  `;
-}
-
-function orderNow(name,price){
-  cart=[{name,price}];
-  show("order");
-}
-
-function confirmOrder(){
+function placeOrder(){
   let phone=document.getElementById("phone").value;
   let address=document.getElementById("address").value;
 
@@ -218,17 +124,16 @@ function confirmOrder(){
     return;
   }
 
-  let rider="Rider "+Math.floor(Math.random()*5+1);
+  let total=0;
+  cart.forEach(i=> total+=i.price);
 
   document.body.innerHTML=`
-    <h1>Order Placed 🎉</h1>
-    <p>${phone}</p>
-    <p>${address}</p>
-    <p>${rider}</p>
+    <h1 style="text-align:center;">🎉 Order Placed</h1>
+    <p style="text-align:center;">Total ₹${total}</p>
+    <p style="text-align:center;">📞 ${phone}</p>
+    <p style="text-align:center;">📍 ${address}</p>
   `;
 }
-
-show("home");
 
 </script>
 
