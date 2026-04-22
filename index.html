@@ -124,10 +124,15 @@ button {
   font-size: 30px;
   margin-right: 8px;
 }
-  .stories{
+.stories{
   display:flex;
   overflow-x:auto;
-  padding:10px;
+}
+
+.story img{
+  width:70px;
+  height:70px;
+  border-radius:50%;
 }
 
 .story{
@@ -151,7 +156,18 @@ button {
   padding:15px;
   border-radius:10px;
 }
-  
+  .offers{
+  padding:10px;
+}
+
+.banner{
+  width:90%;
+  height:180px;
+  object-fit:cover;
+  border-radius:15px;
+  margin:10px auto;
+  display:block;
+}a
 </style>
 
 </head>
@@ -172,18 +188,18 @@ button {
 
 <div class="container">
 
-  
-<div class="offers">
 
-  <div class="offer-card">🔥 50% OFF on Pizza</div>
-  <div class="offer-card">🍔 Buy 1 Get 1 Free</div>
-  <div class="offer-card">🚚 Free Delivery Today</div>
-  
+  <div class="offers">
+
+  <img src="https://picsum.photos/600/250?food1" class="banner">
+  <img src="https://picsum.photos/600/250?food2" class="banner">
+  <img src="https://picsum.photos/600/250?food3" class="banner">
+
+</div>
 </div>
   
 </div>
 
-<button onclick="placeOrder()" style="margin:20px;">Place Order</button>
 
 <script>
 
