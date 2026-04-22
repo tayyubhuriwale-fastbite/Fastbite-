@@ -21,8 +21,6 @@ body {
 body::before {
   content: "";
   position: fixed;
-  top: 0;
-  left: 0;
   width: 100%;
   height: 100%;
   background: rgba(0,0,0,0.6);
@@ -43,12 +41,6 @@ body::before {
 
 #splash img {
   width: 220px;
-  animation: zoom 1s ease;
-}
-
-@keyframes zoom {
-  from {transform: scale(0.5); opacity: 0;}
-  to {transform: scale(1); opacity: 1;}
 }
 
 /* Header */
@@ -61,10 +53,9 @@ header {
 
 .logo {
   font-size: 30px;
-  margin-right: 8px;
 }
 
-/* Inputs */
+/* Search */
 .search {
   width: 90%;
   margin: 10px auto;
@@ -99,7 +90,8 @@ header {
 .offers {
   padding: 10px;
 }
-.offer-card{
+
+.offer-card {
   background: rgba(255,255,255,0.2);
   margin: 15px;
   padding: 20px;
@@ -108,38 +100,14 @@ header {
   font-size: 18px;
 
   opacity: 0;
-  transform: translateY(60px) scale(0.9);
-
-  animation: smoothUp 0.7s ease forwards;
+  transform: translateY(50px);
+  transition: all 0.6s ease;
 }
 
-/* animation */
-@keyframes smoothUp{
-  0%{
-    opacity:0;
-    transform: translateY(60px) scale(0.9);
-  }
-  60%{
-    opacity:1;
-    transform: translateY(-5px) scale(1.02);
-  }
-  100%{
-    opacity:1;
-    transform: translateY(0) scale(1);
-  }
+.offer-card.show {
+  opacity: 1;
+  transform: translateY(0);
 }
-
-/* delay (one by one entry) */
-.offer-card:nth-child(1){animation-delay:0.3s;}
-.offer-card:nth-child(2){animation-delay:0.6s;}
-.offer-card:nth-child(3){animation-delay:0.9s;}
-.offer-card:nth-child(4){animation-delay:1.2s;}
-
-
-.offer-card:nth-child(1){animation-delay:0.2s;}
-.offer-card:nth-child(2){animation-delay:0.4s;}
-.offer-card:nth-child(3){animation-delay:0.6s;}
-.offer-card:nth-child(4){animation-delay:0.8s;}
 
 </style>
 
@@ -181,7 +149,7 @@ header {
   </div>
 </div>
 
-<!-- Speciality Section -->
+<!-- Speciality -->
 <div class="offers">
   <div class="offer-card">🚀 Fast Delivery in 20 mins</div>
   <div class="offer-card">🍔 Fresh & Hot Food</div>
@@ -191,11 +159,22 @@ header {
 
 <script>
 
-/* Splash hide */
 window.onload = function() {
+
+  // splash hide
   setTimeout(() => {
     document.getElementById("splash").style.display = "none";
   }, 1000);
+
+  // animation
+  let cards = document.querySelectorAll(".offer-card");
+
+  cards.forEach((card, i) => {
+    setTimeout(() => {
+      card.classList.add("show");
+    }, i * 400);
+  });
+
 };
 
 </script>
