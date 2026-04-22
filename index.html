@@ -41,6 +41,31 @@ body::before {
 
 #splash img {
   width: 220px;
+  animation: intro 1s ease;
+}
+#splash {
+  animation: fadeOut 0.5s ease 1s forwards;
+}
+
+@keyframes fadeOut {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+/* zoom + fade + slight bounce */
+@keyframes intro {
+  0% {
+    transform: scale(0.5) rotate(-10deg);
+    opacity: 0;
+  }
+  60% {
+    transform: scale(1.1) rotate(5deg);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1) rotate(0);
+  }
 }
 
 /* Header */
@@ -145,8 +170,8 @@ window.onload = function() {
 
   // Splash hide
   setTimeout(() => {
-    document.getElementById("splash").style.display = "none";
-  }, 1000);
+  document.getElementById("splash").style.display = "none";
+}, 1500);
 
   // Animation
   let cards = document.querySelectorAll(".offer-card");
