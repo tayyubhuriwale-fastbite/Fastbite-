@@ -108,9 +108,7 @@ button{
 <!-- TOP -->
 <div class="header">
   <div class="back" onclick="history.back()">⬅</div>
-  <div class="cart">🛒 <span id="count">0</span></div>
-</div>
-
+<div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 <!-- BANNER -->
 <div class="banner">
   <h2>Restaurant 1</h2>
@@ -138,7 +136,9 @@ button{
     <h3>Burger</h3>
     <p>₹149 | ⭐4.1</p>
     <button onclick="addCart()">Add</button>
-    <button>Order</button>
+    <a href="order.html">
+  <button>Order</button>
+</a>
   </div>
 </div>
 
@@ -170,7 +170,9 @@ function addCart(){
     p.style.display="none";
   },1000);
 }
-
+function goOrder(){
+  window.location.href = "order.html";
+}
 </script>
 
 </body>
