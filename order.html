@@ -5,55 +5,57 @@
 <title>Order</title>
 
 <style>
-
 body{
   margin:0;
   font-family: Arial;
-  background: url('https://images.unsplash.com/photo-1600891964599-f61ba0e24092') no-repeat center center;
-  background-size: cover;
+  background:#111;
   color:white;
 }
 
-/* overlay */
-body::before{
-  content:"";
-  position:fixed;
-  width:100%;
-  height:100%;
-  background: rgba(0,0,0,0.7);
-  z-index:-1;
+.header{
+  padding:15px;
+  text-align:center;
+  font-size:20px;
+  background:black;
 }
 
+/* container */
 .container{
-  padding:20px;
+  padding:15px;
+}
+
+/* item */
+.item{
+  display:flex;
+  background:#222;
+  margin:10px 0;
+  padding:10px;
+  border-radius:10px;
+  align-items:center;
+}
+
+.item img{
+  width:70px;
+  height:70px;
+  border-radius:10px;
+  margin-right:10px;
 }
 
 /* box */
 .box{
-  background: rgba(255,255,255,0.2);
+  background:#222;
   padding:15px;
-  border-radius:12px;
+  border-radius:10px;
   margin:15px 0;
 }
 
 /* input */
 input{
   width:100%;
-  padding:12px;
+  padding:10px;
   border-radius:10px;
   border:none;
   margin-top:10px;
-}
-
-/* button */
-button{
-  width:100%;
-  padding:12px;
-  margin-top:15px;
-  border:none;
-  border-radius:10px;
-  background: orange;
-  color:white;
 }
 
 /* payment */
@@ -64,45 +66,63 @@ button{
 
 .pay div{
   flex:1;
-  padding:10px;
   text-align:center;
-  background: rgba(255,255,255,0.2);
+  padding:10px;
+  background:#333;
   border-radius:10px;
+  cursor:pointer;
 }
 
+/* button */
+button{
+  width:100%;
+  padding:12px;
+  border:none;
+  border-radius:10px;
+  background:orange;
+  color:white;
+  font-size:16px;
+}
+
+/* total */
+.total{
+  font-size:18px;
+  margin-top:10px;
+}
 </style>
 </head>
 
 <body>
 
+<div class="header">🛒 Your Order</div>
+
 <div class="container">
 
-<h2>🛒 Confirm Order</h2>
+<!-- items -->
+<div id="items"></div>
 
+<!-- address -->
 <div class="box">
-  <h3>🚀 Delivery Charges</h3>
-  <p>0–2 km → ₹15</p>
-  <p>2–5 km → ₹25</p>
-  <p>5–8 km → ₹40</p>
-</div>
-
-<div class="box">
-  <h3>💸 Small Order Fee लागू / Applied</h3>
-  <p>Orders below ₹100 → +₹20</p>
-  <p>₹100 se kam order → ₹20 extra</p>
-</div>
-
-<div class="box">
-  <h3>📍 Enter Address</h3>
+  <h3>📍 Address</h3>
   <input id="address" placeholder="Enter your address">
 </div>
 
+<!-- payment -->
 <div class="box">
-  <h3>💳 Select Payment</h3>
+  <h3>💳 Payment</h3>
   <div class="pay">
     <div onclick="selectPay('COD')">Cash</div>
     <div onclick="selectPay('Online')">Online</div>
   </div>
+</div>
+
+<!-- charges -->
+<div class="box">
+  <h3>💰 Bill</h3>
+  <p id="itemTotal"></p>
+  <p id="delivery"></p>
+  <p id="smallFee"></p>
+  <div class="total" id="finalTotal"></div>
 </div>
 
 <button onclick="placeOrder()">Place Order</button>
@@ -111,14 +131,50 @@ button{
 
 <script>
 
+/* GET CART */
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
+
+/* SHOW ITEMS */
+let itemsHTML = "";
+let itemTotal = 0;
+
+cart.forEach(item => {
+  itemTotal += item.price;
+
+  itemsHTML += `
+    <div class="item">
+      <img src="${item.img}">
+      <div>
+        <h4>${item.name}</h4>
+        <p>₹${item.price}</p>
+      </div>
+    </div>
+  `;
+});
+
+document.getElementById("items").innerHTML = itemsHTML;
+
+/* CHARGES */
+let deliveryCharge = 20; // simple default
+let smallFee = itemTotal < 100 ? 20 : 0;
+
+let finalTotal = itemTotal + deliveryCharge + smallFee;
+
+/* SHOW BILL */
+document.getElementById("itemTotal").innerText = "Items: ₹" + itemTotal;
+document.getElementById("delivery").innerText = "Delivery: ₹" + deliveryCharge;
+document.getElementById("smallFee").innerText = "Small Order Fee: ₹" + smallFee;
+document.getElementById("finalTotal").innerText = "Total: ₹" + finalTotal;
+
+/* PAYMENT */
 let payment = "COD";
-let riders = ["Rider 1","Rider 2","Rider 3"];
 
 function selectPay(p){
   payment = p;
   alert("Selected: " + p);
 }
 
+/* PLACE ORDER */
 function placeOrder(){
 
   let address = document.getElementById("address").value;
@@ -128,14 +184,18 @@ function placeOrder(){
     return;
   }
 
-  let rider = riders[Math.floor(Math.random()*riders.length)];
-  let time = Math.floor(Math.random()*20)+15;
+  if(cart.length == 0){
+    alert("Cart is empty");
+    return;
+  }
+
+  localStorage.removeItem("cart");
 
   document.body.innerHTML = `
     <div style="text-align:center; padding:50px;">
       <h1>🎉 Order Placed</h1>
-      <h2>${rider} is on the way 🚴</h2>
-      <h3>${time} mins</h3>
+      <h2>Delivery on the way 🚴</h2>
+      <h3>Total: ₹${finalTotal}</h3>
       <p>${address}</p>
       <p>Payment: ${payment}</p>
     </div>
