@@ -19,12 +19,10 @@ body{
   background:black;
 }
 
-/* container */
 .container{
   padding:15px;
 }
 
-/* item */
 .item{
   display:flex;
   background:#222;
@@ -41,7 +39,6 @@ body{
   margin-right:10px;
 }
 
-/* box */
 .box{
   background:#222;
   padding:15px;
@@ -49,7 +46,6 @@ body{
   margin:15px 0;
 }
 
-/* input */
 input{
   width:100%;
   padding:10px;
@@ -58,22 +54,6 @@ input{
   margin-top:10px;
 }
 
-/* payment */
-.pay{
-  display:flex;
-  gap:10px;
-}
-
-.pay div{
-  flex:1;
-  text-align:center;
-  padding:10px;
-  background:#333;
-  border-radius:10px;
-  cursor:pointer;
-}
-
-/* button */
 button{
   width:100%;
   padding:12px;
@@ -84,7 +64,6 @@ button{
   font-size:16px;
 }
 
-/* total */
 .total{
   font-size:18px;
   margin-top:10px;
@@ -94,34 +73,33 @@ button{
 
 <body>
 
-<div class="header">🛒 Your Order</div>
+<div class="header">🛒 Confirm Order</div>
 
 <div class="container">
 
-<!-- items -->
+<!-- ITEMS -->
 <div id="items"></div>
 
-<!-- address -->
+<!-- ADDRESS + PHONE -->
 <div class="box">
-  <h3>📍 Address</h3>
+  <h3>📍 Delivery Details</h3>
   <input id="address" placeholder="Enter your address">
+  <input id="phone" placeholder="Enter phone number">
 </div>
 
-<!-- payment -->
+<!-- INFO -->
 <div class="box">
-  <h3>💳 Payment</h3>
-  <div class="pay">
-    <div onclick="selectPay('COD')">Cash</div>
-    <div onclick="selectPay('Online')">Online</div>
-  </div>
+  <h3>🚀 Delivery Info</h3>
+  <p>Delivery charges will be decided based on your location</p>
+  <p>Location ke hisaab se delivery charge confirm hoga</p>
 </div>
 
-<!-- charges -->
+<!-- BILL -->
 <div class="box">
   <h3>💰 Bill</h3>
   <p id="itemTotal"></p>
-  <p id="delivery"></p>
   <p id="smallFee"></p>
+  <p id="deliveryNote"></p>
   <div class="total" id="finalTotal"></div>
 </div>
 
@@ -154,33 +132,28 @@ cart.forEach(item => {
 
 document.getElementById("items").innerHTML = itemsHTML;
 
-/* CHARGES */
-let deliveryCharge = 20; // simple default
+/* SMALL ORDER */
 let smallFee = itemTotal < 100 ? 20 : 0;
-
-let finalTotal = itemTotal + deliveryCharge + smallFee;
 
 /* SHOW BILL */
 document.getElementById("itemTotal").innerText = "Items: ₹" + itemTotal;
-document.getElementById("delivery").innerText = "Delivery: ₹" + deliveryCharge;
 document.getElementById("smallFee").innerText = "Small Order Fee: ₹" + smallFee;
-document.getElementById("finalTotal").innerText = "Total: ₹" + finalTotal;
-
-/* PAYMENT */
-let payment = "COD";
-
-function selectPay(p){
-  payment = p;
-  alert("Selected: " + p);
-}
+document.getElementById("deliveryNote").innerText = "Delivery charge will be confirmed on call";
+document.getElementById("finalTotal").innerText = "Subtotal: ₹" + (itemTotal + smallFee);
 
 /* PLACE ORDER */
 function placeOrder(){
 
   let address = document.getElementById("address").value;
+  let phone = document.getElementById("phone").value;
 
   if(address==""){
     alert("Enter address");
+    return;
+  }
+
+  if(phone==""){
+    alert("Enter phone number");
     return;
   }
 
@@ -194,10 +167,10 @@ function placeOrder(){
   document.body.innerHTML = `
     <div style="text-align:center; padding:50px;">
       <h1>🎉 Order Placed</h1>
-      <h2>Delivery on the way 🚴</h2>
-      <h3>Total: ₹${finalTotal}</h3>
+      <h3>We will call you to confirm delivery charges 📞</h3>
       <p>${address}</p>
-      <p>Payment: ${payment}</p>
+      <p>📱 ${phone}</p>
+      <p>Subtotal: ₹${itemTotal + smallFee}</p>
     </div>
   `;
 }
