@@ -15,7 +15,7 @@ body{
   color:white;
 }
 
-/* dark overlay */
+/* overlay */
 body::before{
   content:"";
   position:fixed;
@@ -29,43 +29,60 @@ body::before{
 .header{
   display:flex;
   justify-content:space-between;
-  align-items:center;
   padding:15px;
-  font-size:20px;
 }
 
-/* cart */
 .cart{
   background: orange;
   padding:8px 15px;
   border-radius:20px;
 }
 
-/* banner */
-.banner{
-  padding:15px;
-}
-
-.banner h2{
-  margin:0;
-}
-
 /* search */
-.search{
+.search-box{
   width:90%;
   margin:10px auto;
+  position:relative;
+}
+
+.search{
+  width:100%;
   padding:12px;
   border-radius:10px;
   border:none;
 }
 
-/* food items */
+/* suggestions */
+.suggestions{
+  position:absolute;
+  width:100%;
+  background:white;
+  color:black;
+  border-radius:10px;
+  display:none;
+}
+
+.suggestions div{
+  padding:10px;
+  display:flex;
+  align-items:center;
+  border-bottom:1px solid #ccc;
+}
+
+.suggestions img{
+  width:40px;
+  height:40px;
+  margin-right:10px;
+  border-radius:8px;
+}
+
+/* food */
 .food{
   display:flex;
   background: rgba(255,255,255,0.15);
   margin:10px;
-  border-radius:12px;
   padding:10px;
+  border-radius:10px;
   align-items:center;
 }
 
@@ -81,14 +98,15 @@ body::before{
 }
 
 .food button{
+  margin:3px;
   background: orange;
   border:none;
-  padding:8px 12px;
-  border-radius:8px;
+  padding:6px 10px;
+  border-radius:6px;
   color:white;
 }
 
-/* bottom cart bar */
+/* bottom */
 .bottom{
   position:fixed;
   bottom:0;
@@ -104,54 +122,57 @@ body::before{
 
 <body>
 
-<!-- header -->
 <div class="header">
   <div onclick="history.back()">⬅</div>
-  <div>Restaurant 1 ⭐4.3</div>
+  <div>Menu</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
-<!-- banner -->
-<div class="banner">
-  <h2>Fast Delivery 🚀</h2>
+<!-- search -->
+<div class="search-box">
+  <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
+  <div class="suggestions" id="suggestions"></div>
 </div>
 
-<!-- search -->
-<input class="search" placeholder="Search food...">
-
 <!-- food list -->
+<div id="foodList">
 
-<div class="food">
+<div class="food" data-name="pizza">
   <img src="https://picsum.photos/100?pizza">
   <div class="food-details">
     <h3>Pizza</h3>
     <p>₹199 ⭐4.5</p>
+    <small>Restaurant 1</small>
   </div>
   <button onclick="addItem()">Add</button>
   <button onclick="goOrder()">Order</button>
 </div>
 
-<div class="food">
+<div class="food" data-name="burger">
   <img src="https://picsum.photos/100?burger">
   <div class="food-details">
     <h3>Burger</h3>
     <p>₹149 ⭐4.3</p>
+    <small>Restaurant 2</small>
   </div>
   <button onclick="addItem()">Add</button>
   <button onclick="goOrder()">Order</button>
 </div>
 
-<div class="food">
+<div class="food" data-name="biryani">
   <img src="https://picsum.photos/100?biryani">
   <div class="food-details">
     <h3>Biryani</h3>
     <p>₹249 ⭐4.6</p>
+    <small>Restaurant 3</small>
   </div>
   <button onclick="addItem()">Add</button>
   <button onclick="goOrder()">Order</button>
 </div>
 
-<!-- bottom cart -->
+</div>
+
+<!-- bottom -->
 <div class="bottom" id="bottomBar" onclick="goOrder()">
   View Cart (<span id="count2">0</span>)
 </div>
@@ -171,7 +192,4 @@ function goOrder(){
   window.location.href = "order.html";
 }
 
-</script>
-
-</body>
-</html>
+/
