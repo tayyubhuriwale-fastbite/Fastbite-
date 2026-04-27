@@ -103,9 +103,14 @@ button{
 </head>
 
 <body>
-
-<div class="header">
+<div class="header" style="display:flex; align-items:center; justify-content:space-between;">
+  
+  <!-- 👇 Back Button -->
+  <div onclick="goBack()" style="cursor:pointer;">⬅</div>
+  
   <div>Menu</div>
+  
+  <!-- 👇 Cart -->
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
@@ -197,7 +202,9 @@ function selectFood(name){
 function goOrder(){
   window.location.href="order.html";
 }
-
+function goBack(){
+  window.history.back();
+}
 </script>
 
 </body>
