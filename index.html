@@ -196,7 +196,66 @@ window.onload = function() {
   });
 
 };
+<script>
+let cart = [];
+let history = [];
 
+function addToCart(item) {
+  cart.push(item);
+  renderCart();
+}
+
+function removeFromCart(index) {
+  cart.splice(index, 1);
+  renderCart();
+}
+
+function completeOrder() {
+  if (cart.length === 0) return;
+
+  history.push({
+    items: [...cart],
+    time: new Date().toLocaleString()
+  });
+
+  cart = [];
+  renderCart();
+  renderHistory();
+}
+
+function renderCart() {
+  const cartBox = document.getElementById("cart");
+  if (!cartBox) return;
+
+  cartBox.innerHTML = "";
+
+  cart.forEach((item, i) => {
+    cartBox.innerHTML += `
+      <div>
+        ${item}
+        <button onclick="removeFromCart(${i})">Remove</button>
+      </div>
+    `;
+  });
+}
+
+function renderHistory() {
+  const historyBox = document.getElementById("history");
+  if (!historyBox) return;
+
+  historyBox.innerHTML = "";
+
+  history.forEach((order, i) => {
+    historyBox.innerHTML += `
+      <div>
+        <b>Order ${i + 1}</b>
+        <ul>
+          ${order.items.map(it => `<li>${it}</li>`).join("")}
+        </ul>
+      </div>
+    `;
+  });
+}
 </script>
 
 </body>
