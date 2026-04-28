@@ -93,7 +93,6 @@ button{
 
 <div class="header">
   <div>Menu</div>
-  <div onclick="openHistory()">📜</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
@@ -108,16 +107,10 @@ button{
 </div>
 
 <!-- 🔥 HISTORY PANEL -->
-<div id="historyPanel">
-  <h2>History</h2>
-  <button onclick="closeHistory()">Close</button>
-  <div id="historyList"></div>
-</div>
 
 <script>
 
 /* RESET CART EVERY TIME PAGE LOAD */
-localStorage.removeItem("cart");
 
 /* FOOD DATA */
 let foods = [
@@ -168,7 +161,8 @@ function updateCart(){
 
 /* 🔥 ORDER COMPLETE */
 function goOrder(){
-
+  window.location.href = "order.html";
+}
   if(cart.length === 0){
     alert("Cart empty ❌");
     return;
@@ -196,19 +190,6 @@ function searchFood(){
   loadFood(filtered);
 }
 
-/* 🔥 HISTORY PANEL */
-function openHistory(){
-  document.getElementById("historyPanel").style.right="0";
-  loadHistory();
-}
-
-function closeHistory(){
-  document.getElementById("historyPanel").style.right="-100%";
-}
-
-function loadHistory(){
-  let history = JSON.parse(localStorage.getItem("history")) || [];
-  let box = document.getElementById("historyList");
 
   box.innerHTML="";
 
