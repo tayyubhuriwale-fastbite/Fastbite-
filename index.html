@@ -6,8 +6,6 @@
 <title>FastBite</title>
 
 <style>
-
-/* Background */
 body {
   margin: 0;
   font-family: Arial;
@@ -17,7 +15,6 @@ body {
   color: white;
 }
 
-/* Dark overlay */
 body::before {
   content: "";
   position: fixed;
@@ -27,7 +24,6 @@ body::before {
   z-index: -1;
 }
 
-/* Splash */
 #splash {
   position: fixed;
   width: 100%;
@@ -43,6 +39,7 @@ body::before {
   width: 220px;
   animation: intro 1s ease;
 }
+
 #splash {
   animation: fadeOut 0.5s ease 1s forwards;
 }
@@ -53,22 +50,13 @@ body::before {
     visibility: hidden;
   }
 }
-/* zoom + fade + slight bounce */
+
 @keyframes intro {
-  0% {
-    transform: scale(0.5) rotate(-10deg);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.1) rotate(5deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0);
-  }
+  0% { transform: scale(0.5) rotate(-10deg); opacity: 0; }
+  60% { transform: scale(1.1) rotate(5deg); opacity: 1; }
+  100% { transform: scale(1) rotate(0); }
 }
 
-/* Header */
 header {
   text-align: center;
   font-size: 28px;
@@ -80,7 +68,6 @@ header {
   font-size: 30px;
 }
 
-/* Search */
 .search {
   width: 90%;
   margin: 10px auto;
@@ -92,7 +79,6 @@ header {
   color: white;
 }
 
-/* Restaurants */
 .restaurants {
   padding: 10px;
 }
@@ -105,7 +91,6 @@ header {
   backdrop-filter: blur(5px);
 }
 
-/* Speciality */
 .offers {
   padding: 10px;
 }
@@ -117,7 +102,6 @@ header {
   border-radius: 15px;
   text-align: center;
   font-size: 18px;
-
   opacity: 0;
   transform: translateY(60px) scale(0.95);
   transition: all 0.7s ease;
@@ -127,7 +111,8 @@ header {
   opacity: 1;
   transform: translateY(0) scale(1);
 }
-.menu-btn{
+
+.menu-btn {
   background: linear-gradient(45deg, orange, red);
   color: white;
   padding: 12px 25px;
@@ -163,12 +148,25 @@ header {
   <div class="res-card">Restaurant 3 ⭐4.6</div>
   <div class="res-card">Restaurant 4 ⭐4.4</div>
 </div>
-  
+
+<!-- Menu Button -->
 <div style="text-align:center; margin:20px;">
   <a href="menu.html">
     <button class="menu-btn">View Menu</button>
   </a>
 </div>
+
+<!-- 🔥 Cart + History ADD -->
+<h2 style="text-align:center;">🛒 Cart</h2>
+<div id="cart"></div>
+
+<div style="text-align:center;">
+  <button onclick="completeOrder()">Order Complete</button>
+</div>
+
+<h2 style="text-align:center;">📜 History</h2>
+<div id="history"></div>
+
 <!-- Speciality -->
 <div class="offers">
   <div class="offer-card">🚀 Fast Delivery</div>
@@ -177,16 +175,14 @@ header {
   <div class="offer-card">📍 Live Order Tracking</div>
 </div>
 
+<!-- ✅ FIXED SCRIPT -->
 <script>
-
 window.onload = function() {
 
-  // Splash hide
   setTimeout(() => {
-  document.getElementById("splash").style.display = "none";
-}, 1500);
+    document.getElementById("splash").style.display = "none";
+  }, 1500);
 
-  // Animation
   let cards = document.querySelectorAll(".offer-card");
 
   cards.forEach((card, i) => {
@@ -196,6 +192,8 @@ window.onload = function() {
   });
 
 };
+</script>
+
 <script>
 let cart = [];
 let history = [];
@@ -233,7 +231,7 @@ function renderCart() {
     cartBox.innerHTML += `
       <div>
         ${item}
-        <button onclick="removeFromCart(${i})">Remove</button>
+        <button onclick="removeFromCart(${i})">❌</button>
       </div>
     `;
   });
