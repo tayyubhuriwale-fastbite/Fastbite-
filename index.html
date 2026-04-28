@@ -195,7 +195,7 @@ window.onload = function() {
 </script>
 
 <script>
-let cart = [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 let history = [];
 
 function addToCart(item) {
@@ -230,7 +230,7 @@ function renderCart() {
   cart.forEach((item, i) => {
     cartBox.innerHTML += `
       <div>
-        ${item}
+        ${item.name}
         <button onclick="removeFromCart(${i})">❌</button>
       </div>
     `;
