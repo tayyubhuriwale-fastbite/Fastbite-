@@ -12,7 +12,6 @@ body{
   color:white;
 }
 
-/* header */
 .header{
   display:flex;
   justify-content:space-between;
@@ -27,10 +26,7 @@ body{
   cursor:pointer;
 }
 
-/* search */
-.search-box{
-  padding:10px;
-}
+.search-box{ padding:10px; }
 
 .search{
   width:100%;
@@ -39,26 +35,6 @@ body{
   border:none;
 }
 
-.suggestions{
-  background:white;
-  color:black;
-  border-radius:10px;
-  margin-top:5px;
-}
-
-.suggestions div{
-  padding:10px;
-  display:flex;
-  align-items:center;
-  cursor:pointer;
-}
-
-.suggestions img{
-  width:40px;
-  margin-right:10px;
-}
-
-/* food */
 .food{
   display:flex;
   margin:10px;
@@ -74,9 +50,7 @@ body{
   margin-right:10px;
 }
 
-.food-details{
-  flex:1;
-}
+.food-details{ flex:1; }
 
 button{
   margin:3px;
@@ -93,30 +67,38 @@ button{
   position:fixed;
   bottom:0;
   width:100%;
-  background:orange;
+  background:black;
   text-align:center;
   padding:10px;
   display:none;
-  cursor:pointer;
+}
+
+/* 🔥 HISTORY PANEL */
+#historyPanel{
+  position:fixed;
+  top:0;
+  right:-100%;
+  width:80%;
+  height:100%;
+  background:#000;
+  transition:0.3s;
+  padding:15px;
+  overflow:auto;
+  z-index:9999;
 }
 </style>
 </head>
 
 <body>
-<div class="header" style="display:flex; align-items:center; justify-content:space-between;">
-  
-  <!-- 👇 Back Button -->
-  <div onclick="goBack()" style="cursor:pointer;">⬅</div>
-  
+
+<div class="header">
   <div>Menu</div>
-  
-  <!-- 👇 Cart -->
+  <div onclick="openHistory()">📜</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
 <div class="search-box">
   <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
-  <div id="suggestions" class="suggestions"></div>
 </div>
 
 <div id="foodList"></div>
@@ -125,16 +107,26 @@ button{
   View Cart (<span id="count2">0</span>)
 </div>
 
+<!-- 🔥 HISTORY PANEL -->
+<div id="historyPanel">
+  <h2>History</h2>
+  <button onclick="closeHistory()">Close</button>
+  <div id="historyList"></div>
+</div>
+
 <script>
+
+/* RESET CART EVERY TIME PAGE LOAD */
+localStorage.removeItem("cart");
 
 /* FOOD DATA */
 let foods = [
-  {name:"Pizza", price:199, rating:4.5, res:"Restaurant 1", img:"https://images.unsplash.com/photo-1601924582975-7d7f7d0b9c6b"},
-  {name:"Burger", price:149, rating:4.3, res:"Restaurant 2", img:"https://images.unsplash.com/photo-1550547660-d9450f859349"},
-  {name:"Biryani", price:249, rating:4.6, res:"Restaurant 3", img:"https://images.unsplash.com/photo-1604908176997-125f25cc6f3d"}
+  {name:"Pizza", price:199, rating:4.5, res:"Restaurant 1", img:"https://picsum.photos/200"},
+  {name:"Burger", price:149, rating:4.3, res:"Restaurant 2", img:"https://picsum.photos/201"},
+  {name:"Biryani", price:249, rating:4.6, res:"Restaurant 3", img:"https://picsum.photos/202"}
 ];
 
-let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = [];
 
 /* LOAD FOOD */
 function loadFood(list){
@@ -153,6 +145,7 @@ function loadFood(list){
     </div>
     `;
   });
+
   document.getElementById("foodList").innerHTML = html;
 }
 loadFood(foods);
@@ -160,7 +153,6 @@ loadFood(foods);
 /* ADD TO CART */
 function addItem(i){
   cart.push(foods[i]);
-  localStorage.setItem("cart", JSON.stringify(cart));
   updateCart();
 }
 
@@ -168,42 +160,68 @@ function addItem(i){
 function updateCart(){
   document.getElementById("count").innerText = cart.length;
   document.getElementById("count2").innerText = cart.length;
+
   if(cart.length>0){
     document.getElementById("bottomBar").style.display="block";
   }
 }
-updateCart();
 
-/* SEARCH */
+/* 🔥 ORDER COMPLETE */
+function goOrder(){
+
+  if(cart.length === 0){
+    alert("Cart empty ❌");
+    return;
+  }
+
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+
+  history.push({
+    items: cart,
+    time: new Date().toLocaleString()
+  });
+
+  localStorage.setItem("history", JSON.stringify(history));
+
+  cart = [];
+  updateCart();
+
+  alert("Order Placed ✅");
+}
+
+/* 🔍 SEARCH */
 function searchFood(){
   let input = document.getElementById("searchInput").value.toLowerCase();
   let filtered = foods.filter(f => f.name.toLowerCase().includes(input));
   loadFood(filtered);
+}
 
-  let sug="";
-  filtered.forEach(f=>{
-    sug+=`
-      <div onclick="selectFood('${f.name}')">
-        <img src="${f.img}"> ${f.name}
+/* 🔥 HISTORY PANEL */
+function openHistory(){
+  document.getElementById("historyPanel").style.right="0";
+  loadHistory();
+}
+
+function closeHistory(){
+  document.getElementById("historyPanel").style.right="-100%";
+}
+
+function loadHistory(){
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  let box = document.getElementById("historyList");
+
+  box.innerHTML="";
+
+  history.forEach((order,i)=>{
+    box.innerHTML+=`
+      <div>
+        <b>Order ${i+1}</b>
+        <ul>
+          ${order.items.map(it=>`<li>${it.name}</li>`).join("")}
+        </ul>
       </div>
     `;
   });
-
-  document.getElementById("suggestions").innerHTML = sug;
-}
-
-/* SELECT SUGGESTION */
-function selectFood(name){
-  document.getElementById("searchInput").value = name;
-  searchFood();
-}
-
-/* GO ORDER */
-function goOrder(){
-  window.location.href="order.html";
-}
-function goBack(){
-  window.history.back();
 }
 </script>
 
