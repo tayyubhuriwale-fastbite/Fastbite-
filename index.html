@@ -1,202 +1,113 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastBite</title>
+  <title>Food Order App</title>
+  <style>
+    body {
+      font-family: Arial;
+      padding: 10px;
+    }
 
-<style>
+    .item {
+      margin: 5px 0;
+    }
 
-/* Background */
-body {
-  margin: 0;
-  font-family: Arial;
-  background: url('file_00000000342071faa4305e3bf046e775.png') no-repeat center center;
-  background-size: cover;
-  background-attachment: fixed;
-  color: white;
-}
+    button {
+      margin-left: 10px;
+      padding: 5px;
+      cursor: pointer;
+    }
 
-/* Dark overlay */
-body::before {
-  content: "";
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: rgba(0,0,0,0.6);
-  z-index: -1;
-}
+    #cart, #history {
+      margin-top: 20px;
+      padding: 10px;
+      border: 1px solid #000;
+    }
 
-/* Splash */
-#splash {
-  position: fixed;
-  width: 100%;
-  height: 100%;
-  background: black;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  z-index: 9999;
-}
-
-#splash img {
-  width: 220px;
-  animation: intro 1s ease;
-}
-#splash {
-  animation: fadeOut 0.5s ease 1s forwards;
-}
-
-@keyframes fadeOut {
-  to {
-    opacity: 0;
-    visibility: hidden;
-  }
-}
-/* zoom + fade + slight bounce */
-@keyframes intro {
-  0% {
-    transform: scale(0.5) rotate(-10deg);
-    opacity: 0;
-  }
-  60% {
-    transform: scale(1.1) rotate(5deg);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(1) rotate(0);
-  }
-}
-
-/* Header */
-header {
-  text-align: center;
-  font-size: 28px;
-  padding: 20px;
-  font-weight: bold;
-}
-
-.logo {
-  font-size: 30px;
-}
-
-/* Search */
-.search {
-  width: 90%;
-  margin: 10px auto;
-  padding: 12px;
-  display: block;
-  border-radius: 10px;
-  border: none;
-  background: rgba(255,255,255,0.2);
-  color: white;
-}
-
-/* Restaurants */
-.restaurants {
-  padding: 10px;
-}
-
-.res-card {
-  background: rgba(255,255,255,0.2);
-  margin: 10px;
-  padding: 15px;
-  border-radius: 12px;
-  backdrop-filter: blur(5px);
-}
-
-/* Speciality */
-.offers {
-  padding: 10px;
-}
-
-.offer-card {
-  background: rgba(255,255,255,0.2);
-  margin: 15px;
-  padding: 20px;
-  border-radius: 15px;
-  text-align: center;
-  font-size: 18px;
-
-  opacity: 0;
-  transform: translateY(60px) scale(0.95);
-  transition: all 0.7s ease;
-}
-
-.offer-card.show {
-  opacity: 1;
-  transform: translateY(0) scale(1);
-}
-.menu-btn{
-  background: linear-gradient(45deg, orange, red);
-  color: white;
-  padding: 12px 25px;
-  border: none;
-  border-radius: 25px;
-  font-size: 16px;
-  font-weight: bold;
-}
-</style>
-
+    .order-card {
+      border: 1px solid gray;
+      padding: 10px;
+      margin-top: 10px;
+    }
+  </style>
 </head>
 
 <body>
 
-<!-- Splash -->
-<div id="splash">
-  <img src="file_00000000342071faa4305e3bf046e775.png">
-</div>
+  <h2>🍔 Menu</h2>
 
-<!-- Header -->
-<header>
-  <span class="logo">🧸</span>
-  Welcome to FastBite
-</header>
+  <!-- MENU ITEMS -->
+  <div class="item">Pizza <button onclick="addToCart('Pizza')">Add</button></div>
+  <div class="item">Burger <button onclick="addToCart('Burger')">Add</button></div>
+  <div class="item">Fries <button onclick="addToCart('Fries')">Add</button></div>
 
-<!-- Search -->
-<input class="search" placeholder="Search food...">
+  <hr>
 
-<!-- Restaurants -->
-<div class="restaurants">
-  <div class="res-card">Restaurant 1 ⭐4.5</div>
-  <div class="res-card">Restaurant 2 ⭐4.3</div>
-  <div class="res-card">Restaurant 3 ⭐4.6</div>
-  <div class="res-card">Restaurant 4 ⭐4.4</div>
-</div>
-  
-<div style="text-align:center; margin:20px;">
-  <a href="menu.html">
-    <button class="menu-btn">View Menu</button>
-  </a>
-</div>
-<!-- Speciality -->
-<div class="offers">
-  <div class="offer-card">🚀 Fast Delivery</div>
-  <div class="offer-card">🍔 Fresh & Hot Food</div>
-  <div class="offer-card">💸 Best Prices Guaranteed</div>
-  <div class="offer-card">📍 Live Order Tracking</div>
-</div>
+  <h2>🛒 Cart</h2>
+  <div id="cart"></div>
+
+  <button onclick="completeOrder()">✅ Order Complete</button>
+
+  <h2>📜 History</h2>
+  <div id="history"></div>
 
 <script>
+  let cart = [];
+  let history = [];
 
-window.onload = function() {
+  function addToCart(item) {
+    cart.push(item);
+    renderCart();
+  }
 
-  // Splash hide
-  setTimeout(() => {
-  document.getElementById("splash").style.display = "none";
-}, 1500);
+  function removeFromCart(index) {
+    cart.splice(index, 1);
+    renderCart();
+  }
 
-  // Animation
-  let cards = document.querySelectorAll(".offer-card");
+  function completeOrder() {
+    if (cart.length === 0) return;
 
-  cards.forEach((card, i) => {
-    setTimeout(() => {
-      card.classList.add("show");
-    }, i * 400);
-  });
+    history.push({
+      items: [...cart],
+      time: new Date().toLocaleString()
+    });
 
-};
+    cart = [];
+    renderCart();
+    renderHistory();
+  }
 
+  function renderCart() {
+    const cartBox = document.getElementById("cart");
+    cartBox.innerHTML = "";
+
+    cart.forEach((item, i) => {
+      cartBox.innerHTML += `
+        <div>
+          ${item}
+          <button onclick="removeFromCart(${i})">❌ Remove</button>
+        </div>
+      `;
+    });
+  }
+
+  function renderHistory() {
+    const historyBox = document.getElementById("history");
+    historyBox.innerHTML = "";
+
+    history.forEach((order, i) => {
+      historyBox.innerHTML += `
+        <div class="order-card">
+          <b>Order ${i + 1}</b><br>
+          ${order.time}
+          <ul>
+            ${order.items.map(it => `<li>${it}</li>`).join("")}
+          </ul>
+        </div>
+      `;
+    });
+  }
 </script>
 
 </body>
