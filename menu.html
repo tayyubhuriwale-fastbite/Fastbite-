@@ -12,6 +12,7 @@ body{
   color:white;
 }
 
+/* header */
 .header{
   display:flex;
   justify-content:space-between;
@@ -26,34 +27,78 @@ body{
   cursor:pointer;
 }
 
-.search-box{ padding:10px; }
+/* search */
+.search-box{
+  padding:10px;
+}
 
 .search{
-  width:100%;
-  padding:10px;
-  border-radius:10px;
+  width:95%;
+  padding:8px;
+  border-radius:20px;
   border:none;
+  font-size:14px;
 }
 
-.food{
+/* suggestions */
+.suggestions{
+  background:white;
+  color:black;
+  border-radius:10px;
+  margin-top:5px;
+}
+
+.suggestions div{
   display:flex;
-  margin:10px;
-  padding:10px;
-  background:#222;
-  border-radius:10px;
+  padding:8px;
   align-items:center;
+  cursor:pointer;
 }
 
-.food img{
-  width:80px;
-  border-radius:10px;
+.suggestions img{
+  width:40px;
   margin-right:10px;
 }
 
-.food-details{ flex:1; }
+/* categories */
+.categories{
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+}
+
+.categories button{
+  background:#222;
+  border-radius:20px;
+  padding:8px 12px;
+  color:white;
+  border:none;
+}
+
+/* food grid */
+#foodList{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:10px;
+  padding:10px;
+}
+
+.food{
+  background:#222;
+  border-radius:10px;
+  padding:10px;
+  text-align:center;
+}
+
+.food img{
+  width:100%;
+  height:100px;
+  object-fit:cover;
+  border-radius:10px;
+}
 
 button{
-  margin:3px;
+  margin-top:5px;
   padding:6px 10px;
   border:none;
   background:orange;
@@ -62,7 +107,7 @@ button{
   cursor:pointer;
 }
 
-/* bottom */
+/* bottom cart */
 .bottom{
   position:fixed;
   bottom:0;
@@ -71,20 +116,6 @@ button{
   text-align:center;
   padding:10px;
   display:none;
-}
-
-/* 🔥 HISTORY PANEL */
-#historyPanel{
-  position:fixed;
-  top:0;
-  right:-100%;
-  width:80%;
-  height:100%;
-  background:#000;
-  transition:0.3s;
-  padding:15px;
-  overflow:auto;
-  z-index:9999;
 }
 </style>
 </head>
@@ -96,60 +127,67 @@ button{
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
+<!-- search -->
 <div class="search-box">
   <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
+  <div id="suggestions" class="suggestions"></div>
 </div>
 
+<!-- categories -->
+<div class="categories">
+  <button onclick="filterCategory('all')">All</button>
+  <button onclick="filterCategory('sweets')">🍰 Sweets</button>
+  <button onclick="filterCategory('drinks')">🥤 Drinks</button>
+  <button onclick="filterCategory('biryani')">🍛 Biryani</button>
+</div>
+
+<!-- food -->
 <div id="foodList"></div>
 
+<!-- bottom cart -->
 <div class="bottom" id="bottomBar" onclick="goOrder()">
   View Cart (<span id="count2">0</span>)
 </div>
 
-<!-- 🔥 HISTORY PANEL -->
-
 <script>
-
-/* RESET CART EVERY TIME PAGE LOAD */
 
 /* FOOD DATA */
 let foods = [
-  {name:"Pizza", price:199, rating:4.5, res:"Restaurant 1", img:"https://picsum.photos/200"},
-  {name:"Burger", price:149, rating:4.3, res:"Restaurant 2", img:"https://picsum.photos/201"},
-  {name:"Biryani", price:249, rating:4.6, res:"Restaurant 3", img:"https://picsum.photos/202"}
+  {name:"Pizza", price:199, category:"sweets", res:"Dominos", img:"https://source.unsplash.com/200x200/?pizza"},
+  {name:"Burger", price:149, category:"sweets", res:"McDonalds", img:"https://source.unsplash.com/200x200/?burger"},
+  {name:"Biryani", price:249, category:"biryani", res:"Biryani House", img:"https://source.unsplash.com/200x200/?biryani"},
+  {name:"Cola", price:99, category:"drinks", res:"Pepsi", img:"https://source.unsplash.com/200x200/?cola"},
+  {name:"Cake", price:199, category:"sweets", res:"Sweet Shop", img:"https://source.unsplash.com/200x200/?cake"},
+  {name:"Juice", price:120, category:"drinks", res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
 ];
 
 let cart = [];
 
-/* LOAD FOOD */
+/* load food */
 function loadFood(list){
   let html="";
   list.forEach((f,i)=>{
     html+=`
     <div class="food">
       <img src="${f.img}">
-      <div class="food-details">
-        <h3>${f.name}</h3>
-        <p>₹${f.price} ⭐${f.rating}</p>
-        <small>${f.res}</small>
-      </div>
+      <h3>${f.name}</h3>
+      <p>₹${f.price} ⭐4.5</p>
+      <small>${f.res}</small><br>
       <button onclick="addItem(${i})">Add</button>
-      <button onclick="goOrder()">Order</button>
     </div>
     `;
   });
-
   document.getElementById("foodList").innerHTML = html;
 }
 loadFood(foods);
 
-/* ADD TO CART */
+/* add cart */
 function addItem(i){
   cart.push(foods[i]);
   updateCart();
 }
 
-/* UPDATE CART */
+/* update cart */
 function updateCart(){
   document.getElementById("count").innerText = cart.length;
   document.getElementById("count2").innerText = cart.length;
@@ -159,51 +197,48 @@ function updateCart(){
   }
 }
 
-/* 🔥 ORDER COMPLETE */
+/* go order page */
 function goOrder(){
+  localStorage.setItem("cart", JSON.stringify(cart));
   window.location.href = "order.html";
 }
-  if(cart.length === 0){
-    alert("Cart empty ❌");
-    return;
-  }
 
-  let history = JSON.parse(localStorage.getItem("history")) || [];
-
-  history.push({
-    items: cart,
-    time: new Date().toLocaleString()
-  });
-
-  localStorage.setItem("history", JSON.stringify(history));
-
-  cart = [];
-  updateCart();
-
-  alert("Order Placed ✅");
-}
-
-/* 🔍 SEARCH */
+/* search */
 function searchFood(){
   let input = document.getElementById("searchInput").value.toLowerCase();
   let filtered = foods.filter(f => f.name.toLowerCase().includes(input));
+
   loadFood(filtered);
-}
 
+  let sug = document.getElementById("suggestions");
+  sug.innerHTML = "";
 
-  box.innerHTML="";
-
-  history.forEach((order,i)=>{
-    box.innerHTML+=`
-      <div>
-        <b>Order ${i+1}</b>
-        <ul>
-          ${order.items.map(it=>`<li>${it.name}</li>`).join("")}
-        </ul>
+  filtered.slice(0,5).forEach(f=>{
+    sug.innerHTML += `
+      <div onclick="selectFood('${f.name}')">
+        <img src="${f.img}">
+        ${f.name}
       </div>
     `;
   });
 }
+
+function selectFood(name){
+  document.getElementById("searchInput").value = name;
+  document.getElementById("suggestions").innerHTML = "";
+  searchFood();
+}
+
+/* category */
+function filterCategory(cat){
+  if(cat==="all"){
+    loadFood(foods);
+  } else {
+    let filtered = foods.filter(f => f.category === cat);
+    loadFood(filtered);
+  }
+}
+
 </script>
 
 </body>
