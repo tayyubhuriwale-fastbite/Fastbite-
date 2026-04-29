@@ -10,6 +10,12 @@ body{
   font-family: Arial;
   background:#111;
   color:white;
+  animation: fadeIn 0.5s ease;
+}
+
+@keyframes fadeIn {
+  from {opacity:0; transform:translateY(20px);}
+  to {opacity:1;}
 }
 
 /* header */
@@ -18,6 +24,11 @@ body{
   justify-content:space-between;
   padding:15px;
   background:black;
+  align-items:center;
+}
+
+.back{
+  cursor:pointer;
 }
 
 .cart{
@@ -28,54 +39,17 @@ body{
 }
 
 /* search */
-.search-box{
-  padding:10px;
-}
-
 .search{
   width:95%;
-  padding:8px;
-  border-radius:20px;
-  border:none;
-  font-size:14px;
-}
-
-/* suggestions */
-.suggestions{
-  background:white;
-  color:black;
-  border-radius:10px;
-  margin-top:5px;
-}
-
-.suggestions div{
-  display:flex;
-  padding:8px;
-  align-items:center;
-  cursor:pointer;
-}
-
-.suggestions img{
-  width:40px;
-  margin-right:10px;
-}
-
-/* categories */
-.categories{
-  display:flex;
-  justify-content:space-around;
   padding:10px;
-}
-
-.categories button{
-  background:#222;
+  margin:10px;
   border-radius:20px;
-  padding:8px 12px;
-  color:white;
   border:none;
+  background:orange;
+  color:black;
 }
 
-/* food grid */
+/* grid */
 #foodList{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -88,6 +62,11 @@ body{
   border-radius:10px;
   padding:10px;
   text-align:center;
+  transition:0.2s;
+}
+
+.food:hover{
+  transform:scale(1.05);
 }
 
 .food img{
@@ -99,23 +78,43 @@ body{
 
 button{
   margin-top:5px;
-  padding:6px 10px;
+  padding:6px;
   border:none;
+  border-radius:6px;
   background:orange;
   color:white;
-  border-radius:6px;
-  cursor:pointer;
 }
 
-/* bottom cart */
+/* bottom */
 .bottom{
   position:fixed;
   bottom:0;
   width:100%;
-  background:black;
+  background:orange;
   text-align:center;
   padding:10px;
   display:none;
+}
+
+/* popup */
+#popup{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100%;
+  height:100%;
+  background:rgba(0,0,0,0.8);
+  display:none;
+  justify-content:center;
+  align-items:center;
+}
+
+.popup-box{
+  background:#222;
+  padding:20px;
+  border-radius:10px;
+  width:80%;
+  text-align:center;
 }
 </style>
 </head>
@@ -123,57 +122,45 @@ button{
 <body>
 
 <div class="header">
+  <div class="back" onclick="goBack()">⬅️</div>
   <div>Menu</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
-<!-- search -->
-<div class="search-box">
-  <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
-  <div id="suggestions" class="suggestions"></div>
-</div>
+<input class="search" id="searchInput" placeholder="Search..." onkeyup="searchFood()">
 
-<!-- categories -->
-<div class="categories">
-  <button onclick="filterCategory('all')">All</button>
-  <button onclick="filterCategory('sweets')">🍰 Sweets</button>
-  <button onclick="filterCategory('drinks')">🥤 Drinks</button>
-  <button onclick="filterCategory('biryani')">🍛 Biryani</button>
-</div>
-
-<!-- food -->
 <div id="foodList"></div>
 
-<!-- bottom cart -->
 <div class="bottom" id="bottomBar" onclick="goOrder()">
   View Cart (<span id="count2">0</span>)
 </div>
 
+<!-- popup -->
+<div id="popup" onclick="closePopup()">
+  <div class="popup-box" id="popupContent"></div>
+</div>
+
 <script>
 
-/* FOOD DATA */
 let foods = [
-  {name:"Pizza", price:199, category:"sweets", res:"Dominos", img:"https://source.unsplash.com/200x200/?pizza"},
-  {name:"Burger", price:149, category:"sweets", res:"McDonalds", img:"https://source.unsplash.com/200x200/?burger"},
-  {name:"Biryani", price:249, category:"biryani", res:"Biryani House", img:"https://source.unsplash.com/200x200/?biryani"},
-  {name:"Cola", price:99, category:"drinks", res:"Pepsi", img:"https://source.unsplash.com/200x200/?cola"},
-  {name:"Cake", price:199, category:"sweets", res:"Sweet Shop", img:"https://source.unsplash.com/200x200/?cake"},
-  {name:"Juice", price:120, category:"drinks", res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
+  {name:"Pizza", price:199, res:"Dominos", img:"https://source.unsplash.com/200x200/?pizza"},
+  {name:"Burger", price:149, res:"McDonalds", img:"https://source.unsplash.com/200x200/?burger"},
+  {name:"Biryani", price:249, res:"Biryani House", img:"https://source.unsplash.com/200x200/?biryani"},
+  {name:"Juice", price:120, res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
 ];
 
 let cart = [];
 
-/* load food */
 function loadFood(list){
   let html="";
   list.forEach((f,i)=>{
     html+=`
-    <div class="food">
+    <div class="food" onclick="showDetails(${i})">
       <img src="${f.img}">
       <h3>${f.name}</h3>
-      <p>₹${f.price} ⭐4.5</p>
-      <small>${f.res}</small><br>
-      <button onclick="addItem(${i})">Add</button>
+      <p>₹${f.price}</p>
+      <button onclick="event.stopPropagation(); addItem(${i})">Add</button>
+      <button onclick="event.stopPropagation(); goOrder()">Order</button>
     </div>
     `;
   });
@@ -181,13 +168,17 @@ function loadFood(list){
 }
 loadFood(foods);
 
-/* add cart */
+/* add */
 function addItem(i){
   cart.push(foods[i]);
   updateCart();
+
+  /* animation */
+  document.getElementById("count").style.transform="scale(1.3)";
+  setTimeout(()=>{document.getElementById("count").style.transform="scale(1)";},200);
 }
 
-/* update cart */
+/* update */
 function updateCart(){
   document.getElementById("count").innerText = cart.length;
   document.getElementById("count2").innerText = cart.length;
@@ -197,46 +188,39 @@ function updateCart(){
   }
 }
 
-/* go order page */
+/* search */
+function searchFood(){
+  let val = document.getElementById("searchInput").value.toLowerCase();
+  let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
+  loadFood(filtered);
+}
+
+/* navigation */
 function goOrder(){
   localStorage.setItem("cart", JSON.stringify(cart));
   window.location.href = "order.html";
 }
 
-/* search */
-function searchFood(){
-  let input = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = foods.filter(f => f.name.toLowerCase().includes(input));
-
-  loadFood(filtered);
-
-  let sug = document.getElementById("suggestions");
-  sug.innerHTML = "";
-
-  filtered.slice(0,5).forEach(f=>{
-    sug.innerHTML += `
-      <div onclick="selectFood('${f.name}')">
-        <img src="${f.img}">
-        ${f.name}
-      </div>
-    `;
-  });
+function goBack(){
+  window.location.href = "index.html";
 }
 
-function selectFood(name){
-  document.getElementById("searchInput").value = name;
-  document.getElementById("suggestions").innerHTML = "";
-  searchFood();
+/* popup */
+function showDetails(i){
+  let f = foods[i];
+  document.getElementById("popupContent").innerHTML = `
+    <h2>${f.name}</h2>
+    <img src="${f.img}" style="width:100%;border-radius:10px;">
+    <p>₹${f.price}</p>
+    <p>${f.res}</p>
+    <button onclick="addItem(${i})">Add</button>
+    <button onclick="goOrder()">Order</button>
+  `;
+  document.getElementById("popup").style.display="flex";
 }
 
-/* category */
-function filterCategory(cat){
-  if(cat==="all"){
-    loadFood(foods);
-  } else {
-    let filtered = foods.filter(f => f.category === cat);
-    loadFood(filtered);
-  }
+function closePopup(){
+  document.getElementById("popup").style.display="none";
 }
 
 </script>
