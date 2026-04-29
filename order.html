@@ -160,7 +160,19 @@ button:hover{
   <p>2–5 km → ₹30</p>
   <p>5–8 km → ₹40</p>
 </div>
+<div class="box">
+  <h3>💳 Payment Method</h3>
 
+  <label style="display:block; margin:10px 0;">
+    <input type="radio" name="payment" value="COD">
+    💵 Cash on Delivery
+  </label>
+
+  <label style="display:block; margin:10px 0;">
+    <input type="radio" name="payment" value="Online">
+    📱 Online Payment (UPI)
+  </label>
+</div>
 <div class="box">
   <h3>💰 Bill</h3>
   <p id="itemTotal"></p>
@@ -243,24 +255,74 @@ function placeOrder(){
   let phone = document.getElementById("phone").value;
 
   if(address==""){ alert("Enter address"); return; }
-  if(phone==""){ alert("Enter phone"); return; }
-  if(cart.length==0){ alert("Cart empty"); return; }
+  if(phone==""){ alert("Enter phone number"); return; }
+  if(cart.length == 0){ alert("Cart is empty"); return; }
 
+  // Payment type (COD / Online)
+  let paymentType = document.querySelector('input[name="payment"]:checked')?.value;
+
+  if(!paymentType){
+    alert("Select payment method");
+    return;
+  }
+
+  // Build items text
+  let itemsText = "";
+  let total = 0;
+
+  cart.forEach(item=>{
+    itemsText += `- ${item.name} ₹${item.price}%0A`;
+    total += item.price;
+  });
+
+  let smallFee = total < 100 ? 20 : 0;
+  let finalTotal = total + smallFee;
+
+  // WhatsApp message (ADMIN SIDE)
+  let message =
+`🛒 NEW ORDER (MyFoodApp)
+
+👤 Customer:
+Phone: ${phone}
+Address: ${address}
+
+🍔 Items:
+${itemsText}
+
+💰 Payment: ${paymentType}
+
+💵 Total: ₹${finalTotal}
+
+🌐 Source: Website Order`;
+
+  // Save history
   let order = {
     items: cart,
     address: address,
     phone: phone,
-    total: document.getElementById("finalTotal").innerText,
+    payment: paymentType,
+    total: finalTotal,
     time: new Date().toLocaleString()
   };
 
-  saveHistory(order);
+  let history = JSON.parse(localStorage.getItem("history")) || [];
+  history.push(order);
+  localStorage.setItem("history", JSON.stringify(history));
+
+  // Clear cart
   localStorage.removeItem("cart");
 
+  // Open WhatsApp (CHANGE NUMBER HERE)
+  let whatsappNumber = "91XXXXXXXXXX"; // <-- apna number daal
+  let url = `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+
+  window.open(url, "_blank");
+
+  // USER SCREEN ONLY
   document.body.innerHTML = `
-    <div style="text-align:center;padding:50px;">
+    <div style="text-align:center; padding:50px;">
       <h1>🎉 Order Placed</h1>
-      <p style="color:orange;">We will call you 📞</p>
+      <p style="color:orange;">We will contact you soon 📞</p>
     </div>
   `;
 }
