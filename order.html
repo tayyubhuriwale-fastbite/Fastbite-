@@ -85,7 +85,7 @@ button:hover{
   color:orange;
 }
 
-/* REMOVE BUTTON */
+/* REMOVE BTN */
 .removeBtn{
   width:auto;
   padding:6px 10px;
@@ -98,7 +98,7 @@ button:hover{
 #historyPanel{
   position:fixed;
   top:0;
-  right:-320px;
+  right:-100%;
   width:320px;
   height:100%;
   background:#000;
@@ -106,6 +106,7 @@ button:hover{
   transition:0.3s;
   padding:15px;
   overflow-y:auto;
+  z-index:999;
 }
 
 .historyItem{
@@ -115,9 +116,14 @@ button:hover{
   border-radius:10px;
 }
 
+/* BACK BUTTON */
 .backBtn{
   background:orange;
-  margin-bottom:10px;
+  border:none;
+  padding:8px 10px;
+  border-radius:8px;
+  color:white;
+  cursor:pointer;
 }
 </style>
 </head>
@@ -126,9 +132,16 @@ button:hover{
 
 <!-- HEADER -->
 <div class="header">
+
   <div onclick="goBack()" style="cursor:pointer;">⬅</div>
+
   <div>🛒 Confirm Order</div>
-  <div onclick="openHistory()" style="cursor:pointer;">📜</div>
+
+  <!-- HISTORY ICON -->
+  <div onclick="openHistory()" style="cursor:pointer; font-size:20px;">
+    📜
+  </div>
+
 </div>
 
 <div class="container">
@@ -159,11 +172,15 @@ button:hover{
 
 </div>
 
-<!-- HISTORY -->
+<!-- HISTORY PANEL -->
 <div id="historyPanel">
+
   <button class="backBtn" onclick="closeHistory()">⬅ Back</button>
+
   <h2 style="color:orange;">History</h2>
+
   <div id="historyList"></div>
+
 </div>
 
 <script>
@@ -182,12 +199,15 @@ cart.forEach((item, index) => {
   itemsHTML += `
     <div class="item">
       <img src="${item.img}">
+      
       <div style="flex:1">
         <h4>${item.name}</h4>
         <p>₹${item.price}</p>
       </div>
 
-      <button class="removeBtn" onclick="removeItem(${index})">Remove</button>
+      <button class="removeBtn" onclick="removeItem(${index})">
+        Remove
+      </button>
     </div>
   `;
 });
@@ -209,14 +229,14 @@ function removeItem(index){
   location.reload();
 }
 
-/* HISTORY SAVE */
+/* SAVE HISTORY */
 function saveHistory(order){
   let history = JSON.parse(localStorage.getItem("history")) || [];
   history.push(order);
   localStorage.setItem("history", JSON.stringify(history));
 }
 
-/* ORDER */
+/* PLACE ORDER */
 function placeOrder(){
 
   let address = document.getElementById("address").value;
@@ -235,7 +255,6 @@ function placeOrder(){
   };
 
   saveHistory(order);
-
   localStorage.removeItem("cart");
 
   document.body.innerHTML = `
@@ -246,7 +265,7 @@ function placeOrder(){
   `;
 }
 
-/* HISTORY PANEL */
+/* HISTORY OPEN */
 function openHistory(){
   document.getElementById("historyPanel").style.right="0";
 
@@ -267,8 +286,9 @@ function openHistory(){
   document.getElementById("historyList").innerHTML = html;
 }
 
+/* HISTORY CLOSE */
 function closeHistory(){
-  document.getElementById("historyPanel").style.right="-320px";
+  document.getElementById("historyPanel").style.right="-100%";
 }
 
 function goBack(){
