@@ -10,43 +10,70 @@ body{
   font-family: Arial;
   background:#111;
   color:white;
-  animation: fadeIn 0.5s ease;
-}
-
-@keyframes fadeIn {
-  from {opacity:0; transform:translateY(20px);}
-  to {opacity:1;}
 }
 
 /* header */
 .header{
   display:flex;
   justify-content:space-between;
+  align-items:center;
   padding:15px;
   background:black;
-  align-items:center;
-}
-
-.back{
-  cursor:pointer;
 }
 
 .cart{
   background:orange;
   padding:8px 15px;
   border-radius:20px;
-  cursor:pointer;
 }
 
 /* search */
-.search{
-  width:95%;
+.search-box{
   padding:10px;
-  margin:10px;
+}
+
+.search{
+  width:100%;
+  padding:10px;
   border-radius:20px;
   border:none;
   background:orange;
   color:black;
+  box-sizing:border-box;
+}
+
+/* suggestions */
+.suggestions{
+  background:white;
+  color:black;
+  border-radius:10px;
+  margin-top:5px;
+}
+
+.suggestions div{
+  display:flex;
+  padding:8px;
+  align-items:center;
+}
+
+.suggestions img{
+  width:40px;
+  margin-right:10px;
+}
+
+/* categories */
+.categories{
+  display:flex;
+  justify-content:space-around;
+  padding:10px;
+}
+
+.categories button{
+  background:#222;
+  color:white;
+  border:none;
+  border-radius:20px;
+  padding:8px;
 }
 
 /* grid */
@@ -62,11 +89,11 @@ body{
   border-radius:10px;
   padding:10px;
   text-align:center;
-  transition:0.2s;
+  transition:0.3s;
 }
 
-.food:hover{
-  transform:scale(1.05);
+.food:active{
+  transform:scale(0.9);
 }
 
 .food img{
@@ -76,6 +103,7 @@ body{
   border-radius:10px;
 }
 
+/* buttons */
 button{
   margin-top:5px;
   padding:6px;
@@ -85,7 +113,7 @@ button{
   color:white;
 }
 
-/* bottom */
+/* bottom cart */
 .bottom{
   position:fixed;
   bottom:0;
@@ -94,6 +122,12 @@ button{
   text-align:center;
   padding:10px;
   display:none;
+  animation:slideUp 0.3s ease;
+}
+
+@keyframes slideUp{
+  from{transform:translateY(100%);}
+  to{transform:translateY(0);}
 }
 
 /* popup */
@@ -122,12 +156,22 @@ button{
 <body>
 
 <div class="header">
-  <div class="back" onclick="goBack()">⬅️</div>
+  <div onclick="goBack()">⬅️</div>
   <div>Menu</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
 
-<input class="search" id="searchInput" placeholder="Search..." onkeyup="searchFood()">
+<div class="search-box">
+  <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
+  <div id="suggestions" class="suggestions"></div>
+</div>
+
+<div class="categories">
+  <button onclick="filterCategory('all')">All</button>
+  <button onclick="filterCategory('sweets')">🍰</button>
+  <button onclick="filterCategory('drinks')">🥤</button>
+  <button onclick="filterCategory('biryani')">🍛</button>
+</div>
 
 <div id="foodList"></div>
 
@@ -143,10 +187,12 @@ button{
 <script>
 
 let foods = [
-  {name:"Pizza", price:199, res:"Dominos", img:"https://source.unsplash.com/200x200/?pizza"},
-  {name:"Burger", price:149, res:"McDonalds", img:"https://source.unsplash.com/200x200/?burger"},
-  {name:"Biryani", price:249, res:"Biryani House", img:"https://source.unsplash.com/200x200/?biryani"},
-  {name:"Juice", price:120, res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
+  {name:"Pizza", price:199, category:"sweets", res:"Dominos", img:"https://source.unsplash.com/200x200/?pizza"},
+  {name:"Burger", price:149, category:"sweets", res:"McDonalds", img:"https://source.unsplash.com/200x200/?burger"},
+  {name:"Biryani", price:249, category:"biryani", res:"Biryani House", img:"https://source.unsplash.com/200x200/?biryani"},
+  {name:"Cola", price:99, category:"drinks", res:"Pepsi", img:"https://source.unsplash.com/200x200/?cola"},
+  {name:"Cake", price:199, category:"sweets", res:"Sweet Shop", img:"https://source.unsplash.com/200x200/?cake"},
+  {name:"Juice", price:120, category:"drinks", res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
 ];
 
 let cart = [];
@@ -159,6 +205,7 @@ function loadFood(list){
       <img src="${f.img}">
       <h3>${f.name}</h3>
       <p>₹${f.price}</p>
+      <small>${f.res}</small>
       <button onclick="event.stopPropagation(); addItem(${i})">Add</button>
       <button onclick="event.stopPropagation(); goOrder()">Order</button>
     </div>
@@ -168,17 +215,11 @@ function loadFood(list){
 }
 loadFood(foods);
 
-/* add */
 function addItem(i){
   cart.push(foods[i]);
   updateCart();
-
-  /* animation */
-  document.getElementById("count").style.transform="scale(1.3)";
-  setTimeout(()=>{document.getElementById("count").style.transform="scale(1)";},200);
 }
 
-/* update */
 function updateCart(){
   document.getElementById("count").innerText = cart.length;
   document.getElementById("count2").innerText = cart.length;
@@ -188,24 +229,48 @@ function updateCart(){
   }
 }
 
-/* search */
-function searchFood(){
-  let val = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
-  loadFood(filtered);
-}
-
-/* navigation */
 function goOrder(){
   localStorage.setItem("cart", JSON.stringify(cart));
   window.location.href = "order.html";
 }
 
 function goBack(){
-  window.location.href = "index.html";
+  history.back();
 }
 
-/* popup */
+function searchFood(){
+  let val = document.getElementById("searchInput").value.toLowerCase();
+  let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
+  loadFood(filtered);
+
+  let sug = document.getElementById("suggestions");
+  sug.innerHTML = "";
+
+  filtered.slice(0,5).forEach(f=>{
+    sug.innerHTML += `
+      <div onclick="selectFood('${f.name}')">
+        <img src="${f.img}">
+        ${f.name}
+      </div>
+    `;
+  });
+}
+
+function selectFood(name){
+  document.getElementById("searchInput").value = name;
+  document.getElementById("suggestions").innerHTML="";
+  searchFood();
+}
+
+function filterCategory(cat){
+  if(cat==="all"){
+    loadFood(foods);
+  } else {
+    let filtered = foods.filter(f => f.category===cat);
+    loadFood(filtered);
+  }
+}
+
 function showDetails(i){
   let f = foods[i];
   document.getElementById("popupContent").innerHTML = `
