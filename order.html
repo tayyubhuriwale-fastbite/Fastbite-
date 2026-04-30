@@ -12,7 +12,6 @@ body{
   color:white;
 }
 
-/* HEADER */
 .header{
   padding:15px;
   background:black;
@@ -22,12 +21,8 @@ body{
   color:orange;
 }
 
-/* CONTAINER */
-.container{
-  padding:15px;
-}
+.container{ padding:15px; }
 
-/* ITEM */
 .item{
   display:flex;
   background:#222;
@@ -44,7 +39,6 @@ body{
   margin-right:10px;
 }
 
-/* BOX */
 .box{
   background:#222;
   padding:15px;
@@ -52,7 +46,6 @@ body{
   margin:15px 0;
 }
 
-/* INPUT */
 input{
   width:100%;
   padding:10px;
@@ -63,7 +56,6 @@ input{
   color:white;
 }
 
-/* BUTTON */
 button{
   width:100%;
   padding:12px;
@@ -79,7 +71,6 @@ button{
   margin-top:10px;
 }
 
-/* REMOVE */
 .removeBtn{
   width:auto;
   padding:6px 10px;
@@ -87,7 +78,6 @@ button{
   background:#FF7A00;
 }
 
-/* PAYMENT */
 .payOption{
   display:flex;
   align-items:center;
@@ -102,7 +92,6 @@ button{
   accent-color:orange;
 }
 
-/* HISTORY */
 #historyPanel{
   position:fixed;
   top:0;
@@ -151,7 +140,6 @@ button{
   <p>Location ke hisaab se delivery charge final hoga</p>
 </div>
 
-<!-- PAYMENT -->
 <div class="box">
   <h3>💳 Payment Method</h3>
 
@@ -168,11 +156,11 @@ button{
 
 <div class="box">
   <h3>💰 Bill</h3>
-  
+
   <p style="color:orange; font-size:14px;">
-⚠️ Minimum order ₹100. Below ₹100, ₹20 extra charge applies.
-</p>
-  
+  ⚠️ Minimum order ₹100. Below ₹100, ₹20 extra charge applies.
+  </p>
+
   <p id="itemTotal"></p>
   <p id="smallFee"></p>
   <p id="deliveryNote"></p>
@@ -183,7 +171,6 @@ button{
 
 </div>
 
-<!-- HISTORY -->
 <div id="historyPanel">
   <button class="backBtn" onclick="closeHistory()">⬅ Back</button>
   <h2 style="color:orange;">History</h2>
@@ -262,24 +249,27 @@ Payment: ${payment}
 
 Total: ₹${final}
 
-Delivery: Confirm on call`;
+Delivery: Confirm on call
+
+📢 Please tap SEND to confirm your order`;
 
 let number="919529785348";
 
+/* PROCESS SCREEN */
 document.body.innerHTML = `
   <div style="text-align:center; padding:50px;">
-    <h2>Processing your order...</h2>
-    <p style="color:orange;">Please wait...</p>
+    <h2>Placing your order...</h2>
+    <p style="color:orange;">Opening WhatsApp 📲</p>
   </div>
 `;
 
-setTimeout(()=>{
-  window.location.href = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
-},1000);
-  
 localStorage.removeItem("cart");
 
-document.body.innerHTML=`<h1 style="text-align:center;padding:50px;">🎉 Order Placed</h1>`;
+/* REDIRECT */
+setTimeout(()=>{
+  window.location.href = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+},1500);
+
 }
 
 function openHistory(){
