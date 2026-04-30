@@ -290,7 +290,21 @@ function showDetails(i){
 function closePopup(){
   document.getElementById("popup").style.display="none";
 }
+function directOrder(name, price, img){
 
+  // sirf ek item ke liye fresh cart
+  let cart = [];
+
+  cart.push({
+    name: name,
+    price: price,
+    img: img
+  });
+
+  localStorage.setItem("cart", JSON.stringify(cart));
+
+  window.location.href = "order.html";
+}
 </script>
 
 </body>
