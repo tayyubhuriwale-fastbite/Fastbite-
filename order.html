@@ -266,8 +266,17 @@ Delivery: Confirm on call`;
 
 let number="919529785348";
 
-window.open(`https://wa.me/${number}?text=${encodeURIComponent(msg)}`);
+document.body.innerHTML = `
+  <div style="text-align:center; padding:50px;">
+    <h2>Processing your order...</h2>
+    <p style="color:orange;">Please wait...</p>
+  </div>
+`;
 
+setTimeout(()=>{
+  window.location.href = `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+},1000);
+  
 localStorage.removeItem("cart");
 
 document.body.innerHTML=`<h1 style="text-align:center;padding:50px;">🎉 Order Placed</h1>`;
