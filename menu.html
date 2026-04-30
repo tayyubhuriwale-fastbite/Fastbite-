@@ -12,6 +12,7 @@ body{
   color:white;
 }
 
+/* HEADER */
 .header{
   display:flex;
   justify-content:space-between;
@@ -26,10 +27,11 @@ body{
   border-radius:20px;
 }
 
-.search-box{ padding:10px; }
-
+/* SEARCH */
 .search{
-  width:100%;
+  width:90%;
+  margin:10px auto;
+  display:block;
   padding:10px;
   border-radius:20px;
   border:none;
@@ -37,38 +39,54 @@ body{
   color:black;
 }
 
+/* SUGGESTIONS */
 .suggestions{
   background:white;
   color:black;
   border-radius:10px;
-  margin-top:5px;
+  margin:5px auto;
+  width:90%;
 }
 
 .suggestions div{
   display:flex;
-  padding:8px;
   align-items:center;
+  padding:8px;
+  gap:10px;
+  border-bottom:1px solid #ddd;
 }
 
 .suggestions img{
   width:40px;
-  margin-right:10px;
+  height:40px;
+  border-radius:8px;
 }
 
+/* CATEGORIES */
 .categories{
   display:flex;
   justify-content:space-around;
   padding:10px;
 }
 
-.categories button{
+.cat{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
   background:#222;
-  color:white;
-  border:none;
-  border-radius:20px;
-  padding:8px;
+  padding:10px;
+  border-radius:10px;
+  width:70px;
+  font-size:22px;
+  cursor:pointer;
 }
 
+.cat span{
+  font-size:12px;
+  margin-top:5px;
+}
+
+/* GRID */
 #foodList{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -99,6 +117,7 @@ button{
   color:white;
 }
 
+/* CART BAR */
 .bottom{
   position:fixed;
   bottom:0;
@@ -109,6 +128,7 @@ button{
   display:none;
 }
 
+/* POPUP */
 #popup{
   position:fixed;
   top:0;
@@ -143,16 +163,32 @@ button{
 ⚠️ Minimum order ₹100. Below ₹100, ₹20 extra charge applies.
 </p>
 
-<div class="search-box">
-  <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
-  <div id="suggestions" class="suggestions"></div>
-</div>
+<input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
+<div id="suggestions" class="suggestions"></div>
 
+<!-- CATEGORIES -->
 <div class="categories">
-  <button onclick="filterCategory('all')">All</button>
-  <button onclick="filterCategory('sweets')">🍰</button>
-  <button onclick="filterCategory('drinks')">🥤</button>
-  <button onclick="filterCategory('biryani')">🍛</button>
+
+  <div class="cat" onclick="filterCategory('all')">
+    🍽️
+    <span>All</span>
+  </div>
+
+  <div class="cat" onclick="filterCategory('sweets')">
+    🍰
+    <span>Sweets</span>
+  </div>
+
+  <div class="cat" onclick="filterCategory('drinks')">
+    🥤
+    <span>Drinks</span>
+  </div>
+
+  <div class="cat" onclick="filterCategory('biryani')">
+    🍛
+    <span>Biryani</span>
+  </div>
+
 </div>
 
 <div id="foodList"></div>
@@ -216,13 +252,46 @@ function goOrder(){
 }
 
 function directOrder(name, price, img){
-  let cart = [{
-    name:name,
-    price:price,
-    img:img
-  }];
+  let cart = [{name, price, img}];
   localStorage.setItem("cart", JSON.stringify(cart));
   window.location.href = "order.html";
+}
+
+/* SEARCH */
+function searchFood(){
+  let val = document.getElementById("searchInput").value.toLowerCase();
+  let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
+  loadFood(filtered);
+
+  let sug = document.getElementById("suggestions");
+  sug.innerHTML = "";
+
+  if(val==="") return;
+
+  filtered.slice(0,5).forEach(f=>{
+    sug.innerHTML += `
+      <div onclick="selectFood('${f.name}')">
+        <img src="${f.img}">
+        <span>${f.name}</span>
+      </div>
+    `;
+  });
+}
+
+function selectFood(name){
+  document.getElementById("searchInput").value = name;
+  document.getElementById("suggestions").innerHTML="";
+  searchFood();
+}
+
+/* FILTER */
+function filterCategory(cat){
+  if(cat==="all"){
+    loadFood(foods);
+  } else {
+    let filtered = foods.filter(f => f.category===cat);
+    loadFood(filtered);
+  }
 }
 
 function showDetails(i){
@@ -245,6 +314,7 @@ function closePopup(){
 function goBack(){
   history.back();
 }
+
 </script>
 
 </body>
