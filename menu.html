@@ -12,7 +12,6 @@ body{
   color:white;
 }
 
-/* header */
 .header{
   display:flex;
   justify-content:space-between;
@@ -27,10 +26,7 @@ body{
   border-radius:20px;
 }
 
-/* search */
-.search-box{
-  padding:10px;
-}
+.search-box{ padding:10px; }
 
 .search{
   width:100%;
@@ -39,10 +35,8 @@ body{
   border:none;
   background:orange;
   color:black;
-  box-sizing:border-box;
 }
 
-/* suggestions */
 .suggestions{
   background:white;
   color:black;
@@ -61,7 +55,6 @@ body{
   margin-right:10px;
 }
 
-/* categories */
 .categories{
   display:flex;
   justify-content:space-around;
@@ -76,7 +69,6 @@ body{
   padding:8px;
 }
 
-/* grid */
 #foodList{
   display:grid;
   grid-template-columns:1fr 1fr;
@@ -89,11 +81,6 @@ body{
   border-radius:10px;
   padding:10px;
   text-align:center;
-  transition:0.3s;
-}
-
-.food:active{
-  transform:scale(0.9);
 }
 
 .food img{
@@ -103,7 +90,6 @@ body{
   border-radius:10px;
 }
 
-/* buttons */
 button{
   margin-top:5px;
   padding:6px;
@@ -113,7 +99,6 @@ button{
   color:white;
 }
 
-/* bottom cart */
 .bottom{
   position:fixed;
   bottom:0;
@@ -122,15 +107,8 @@ button{
   text-align:center;
   padding:10px;
   display:none;
-  animation:slideUp 0.3s ease;
 }
 
-@keyframes slideUp{
-  from{transform:translateY(100%);}
-  to{transform:translateY(0);}
-}
-
-/* popup */
 #popup{
   position:fixed;
   top:0;
@@ -160,10 +138,11 @@ button{
   <div>Menu</div>
   <div class="cart" onclick="goOrder()">🛒 <span id="count">0</span></div>
 </div>
+
 <p style="text-align:center; color:orange; font-size:14px; margin:10px;">
 ⚠️ Minimum order ₹100. Below ₹100, ₹20 extra charge applies.
 </p>
-  
+
 <div class="search-box">
   <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
   <div id="suggestions" class="suggestions"></div>
@@ -182,7 +161,6 @@ button{
   View Cart (<span id="count2">0</span>)
 </div>
 
-<!-- popup -->
 <div id="popup" onclick="closePopup()">
   <div class="popup-box" id="popupContent"></div>
 </div>
@@ -210,7 +188,7 @@ function loadFood(list){
       <p>₹${f.price}</p>
       <small>${f.res}</small>
       <button onclick="event.stopPropagation(); addItem(${i})">Add</button>
-      <button onclick="event.stopPropagation(); goOrder()">Order</button>
+      <button onclick="event.stopPropagation(); directOrder('${f.name}', ${f.price}, '${f.img}')">Order</button>
     </div>
     `;
   });
@@ -237,41 +215,14 @@ function goOrder(){
   window.location.href = "order.html";
 }
 
-function goBack(){
-  history.back();
-}
-
-function searchFood(){
-  let val = document.getElementById("searchInput").value.toLowerCase();
-  let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
-  loadFood(filtered);
-
-  let sug = document.getElementById("suggestions");
-  sug.innerHTML = "";
-
-  filtered.slice(0,5).forEach(f=>{
-    sug.innerHTML += `
-      <div onclick="selectFood('${f.name}')">
-        <img src="${f.img}">
-        ${f.name}
-      </div>
-    `;
-  });
-}
-
-function selectFood(name){
-  document.getElementById("searchInput").value = name;
-  document.getElementById("suggestions").innerHTML="";
-  searchFood();
-}
-
-function filterCategory(cat){
-  if(cat==="all"){
-    loadFood(foods);
-  } else {
-    let filtered = foods.filter(f => f.category===cat);
-    loadFood(filtered);
-  }
+function directOrder(name, price, img){
+  let cart = [{
+    name:name,
+    price:price,
+    img:img
+  }];
+  localStorage.setItem("cart", JSON.stringify(cart));
+  window.location.href = "order.html";
 }
 
 function showDetails(i){
@@ -282,7 +233,7 @@ function showDetails(i){
     <p>₹${f.price}</p>
     <p>${f.res}</p>
     <button onclick="addItem(${i})">Add</button>
-    <button onclick="goOrder()">Order</button>
+    <button onclick="directOrder('${f.name}', ${f.price}, '${f.img}')">Order</button>
   `;
   document.getElementById("popup").style.display="flex";
 }
@@ -290,20 +241,9 @@ function showDetails(i){
 function closePopup(){
   document.getElementById("popup").style.display="none";
 }
-function directOrder(name, price, img){
 
-  // sirf ek item ke liye fresh cart
-  let cart = [];
-
-  cart.push({
-    name: name,
-    price: price,
-    img: img
-  });
-
-  localStorage.setItem("cart", JSON.stringify(cart));
-
-  window.location.href = "order.html";
+function goBack(){
+  history.back();
 }
 </script>
 
