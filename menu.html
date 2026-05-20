@@ -212,7 +212,8 @@ let foods = [
   {name:"Juice", price:120, category:"drinks", res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
 ];
 
-let cart = [];
+let cart =
+  let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function loadFood(list){
   let html="";
@@ -234,7 +235,8 @@ loadFood(foods);
 
 function addItem(i){
   cart.push(foods[i]);
-  updateCart();
+  loadFood(foods);
+updateCart();
 }
 
 function updateCart(){
