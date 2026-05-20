@@ -54,6 +54,7 @@ body{
   padding:8px;
   gap:10px;
   border-bottom:1px solid #ddd;
+  cursor:pointer;
 }
 
 .suggestions img{
@@ -166,9 +167,7 @@ button{
 <input class="search" id="searchInput" placeholder="Search food..." onkeyup="searchFood()">
 <div id="suggestions" class="suggestions"></div>
 
-<!-- CATEGORIES -->
 <div class="categories">
-
   <div class="cat" onclick="filterCategory('all')">
     🍽️
     <span>All</span>
@@ -188,7 +187,6 @@ button{
     🍛
     <span>Biryani</span>
   </div>
-
 </div>
 
 <div id="foodList"></div>
@@ -212,18 +210,17 @@ let foods = [
   {name:"Juice", price:120, category:"drinks", res:"Juice Center", img:"https://source.unsplash.com/200x200/?juice"}
 ];
 
-let cart =
-  let cart = JSON.parse(localStorage.getItem("cart")) || [];
+let cart = JSON.parse(localStorage.getItem("cart")) || [];
 
 function loadFood(list){
   let html="";
   list.forEach((f,i)=>{
-    html+=`
+    html += `
     <div class="food" onclick="showDetails(${i})">
       <img src="${f.img}">
       <h3>${f.name}</h3>
       <p>₹${f.price}</p>
-      <small>${f.res}</small>
+      <small>${f.res}</small><br>
       <button onclick="event.stopPropagation(); addItem(${i})">Add</button>
       <button onclick="event.stopPropagation(); directOrder('${f.name}', ${f.price}, '${f.img}')">Order</button>
     </div>
@@ -231,20 +228,21 @@ function loadFood(list){
   });
   document.getElementById("foodList").innerHTML = html;
 }
-loadFood(foods);
 
 function addItem(i){
   cart.push(foods[i]);
-  loadFood(foods);
-updateCart();
+  localStorage.setItem("cart", JSON.stringify(cart));
+  updateCart();
 }
 
 function updateCart(){
   document.getElementById("count").innerText = cart.length;
   document.getElementById("count2").innerText = cart.length;
 
-  if(cart.length>0){
-    document.getElementById("bottomBar").style.display="block";
+  if(cart.length > 0){
+    document.getElementById("bottomBar").style.display = "block";
+  }else{
+    document.getElementById("bottomBar").style.display = "none";
   }
 }
 
@@ -254,12 +252,11 @@ function goOrder(){
 }
 
 function directOrder(name, price, img){
-  let cart = [{name, price, img}];
-  localStorage.setItem("cart", JSON.stringify(cart));
+  let directCart = [{name, price, img}];
+  localStorage.setItem("cart", JSON.stringify(directCart));
   window.location.href = "order.html";
 }
 
-/* SEARCH */
 function searchFood(){
   let val = document.getElementById("searchInput").value.toLowerCase();
   let filtered = foods.filter(f => f.name.toLowerCase().includes(val));
@@ -268,7 +265,7 @@ function searchFood(){
   let sug = document.getElementById("suggestions");
   sug.innerHTML = "";
 
-  if(val==="") return;
+  if(val === "") return;
 
   filtered.slice(0,5).forEach(f=>{
     sug.innerHTML += `
@@ -282,16 +279,15 @@ function searchFood(){
 
 function selectFood(name){
   document.getElementById("searchInput").value = name;
-  document.getElementById("suggestions").innerHTML="";
+  document.getElementById("suggestions").innerHTML = "";
   searchFood();
 }
 
-/* FILTER */
 function filterCategory(cat){
-  if(cat==="all"){
+  if(cat === "all"){
     loadFood(foods);
   } else {
-    let filtered = foods.filter(f => f.category===cat);
+    let filtered = foods.filter(f => f.category === cat);
     loadFood(filtered);
   }
 }
@@ -300,22 +296,25 @@ function showDetails(i){
   let f = foods[i];
   document.getElementById("popupContent").innerHTML = `
     <h2>${f.name}</h2>
-    <img src="${f.img}" style="width:100%;border-radius:10px;">
+    <img src="${f.img}" style="width:100%; border-radius:10px;">
     <p>₹${f.price}</p>
     <p>${f.res}</p>
     <button onclick="addItem(${i})">Add</button>
     <button onclick="directOrder('${f.name}', ${f.price}, '${f.img}')">Order</button>
   `;
-  document.getElementById("popup").style.display="flex";
+  document.getElementById("popup").style.display = "flex";
 }
 
 function closePopup(){
-  document.getElementById("popup").style.display="none";
+  document.getElementById("popup").style.display = "none";
 }
 
 function goBack(){
-  history.back();
+  window.history.back();
 }
+
+loadFood(foods);
+updateCart();
 
 </script>
 
