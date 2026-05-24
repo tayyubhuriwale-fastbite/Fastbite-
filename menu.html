@@ -308,7 +308,10 @@ function showDetails(i){
 function closePopup(){
   document.getElementById("popup").style.display = "none";
 }
-
+window.addEventListener("pageshow", function () {
+  cart = JSON.parse(localStorage.getItem("cart")) || [];
+  updateCart();
+});
 function goBack(){
   window.history.back();
 }
