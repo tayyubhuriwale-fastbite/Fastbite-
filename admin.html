@@ -1,0 +1,70 @@
+<!DOCTYPE html><html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FastBite Admin</title>
+<style>
+body{margin:0;font-family:Arial;background:#111;color:white;display:flex}
+.sidebar{width:220px;background:black;height:100vh;padding:20px;box-sizing:border-box}
+.sidebar h2{color:orange;text-align:center}
+.menu-item{padding:12px;margin:8px 0;background:#222;border-radius:10px;cursor:pointer}
+.menu-item:hover{background:orange}
+.content{flex:1;padding:20px}
+.section{display:none;background:#1c1c1c;padding:20px;border-radius:12px}
+.section.active{display:block}
+input,select{width:100%;padding:10px;margin:8px 0;border:none;border-radius:8px}
+button{background:orange;color:white;border:none;padding:10px 15px;border-radius:8px;cursor:pointer}
+.card{background:#222;padding:15px;border-radius:10px;margin:10px 0}
+</style>
+</head>
+<body>
+<div class="sidebar">
+  <h2>Admin</h2>
+  <div class="menu-item" onclick="show('dashboard')">🏠 Dashboard</div>
+  <div class="menu-item" onclick="show('foods')">🍔 Foods</div>
+  <div class="menu-item" onclick="show('restaurants')">🏪 Restaurants</div>
+  <div class="menu-item" onclick="show('theme')">🎨 Theme</div>
+  <div class="menu-item" onclick="show('delivery')">🚚 Delivery</div>
+  <div class="menu-item" onclick="show('orders')">📦 Orders</div>
+  <div class="menu-item" onclick="show('history')">📜 History</div>
+  <div class="menu-item" onclick="show('settings')">⚙️ Settings</div>
+</div><div class="content">
+  <div id="dashboard" class="section active">
+    <h1>Dashboard</h1>
+    <div class="card">Total Foods: <span id="foodCount">0</span></div>
+    <div class="card">Total Restaurants: <span id="restaurantCount">0</span></div>
+  </div>  <div id="foods" class="section">
+    <h1>Food Management</h1>
+    <input id="foodName" placeholder="Food name">
+    <input id="foodPrice" placeholder="Price">
+    <input id="foodImage" placeholder="Image URL">
+    <select id="foodCategory">
+      <option>sweets</option>
+      <option>drinks</option>
+      <option>biryani</option>
+    </select>
+    <button onclick="addFood()">Add Food</button>
+    <div id="foodList"></div>
+  </div>  <div id="restaurants" class="section"><h1>Restaurant Management</h1><p>Add/edit restaurants here.</p></div>
+  <div id="theme" class="section"><h1>Theme Settings</h1><p>Color/theme controls here.</p></div>
+  <div id="delivery" class="section"><h1>Delivery Settings</h1><p>Change delivery charges here.</p></div>
+  <div id="orders" class="section"><h1>Orders</h1><p>Live orders here.</p></div>
+  <div id="history" class="section"><h1>History</h1><p>Completed orders here.</p></div>
+  <div id="settings" class="section"><h1>Settings</h1><p>Password & app settings here.</p></div>
+</div><script>
+let foods = JSON.parse(localStorage.getItem('foods')) || [];
+function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
+function saveFoods(){localStorage.setItem('foods', JSON.stringify(foods)); renderFoods();}
+function addFood(){
+ let f={name:foodName.value,price:foodPrice.value,img:foodImage.value,category:foodCategory.value};
+ foods.push(f); saveFoods(); foodName.value=''; foodPrice.value=''; foodImage.value='';
+}
+function deleteFood(i){foods.splice(i,1); saveFoods();}
+function renderFoods(){
+ document.getElementById('foodCount').innerText=foods.length;
+ let html='';
+ foods.forEach((f,i)=> html += `<div class='card'>${f.name} - ₹${f.price} <button onclick='deleteFood(${i})'>Delete</button></div>`);
+ document.getElementById('foodList').innerHTML=html;
+}
+renderFoods();
+</script></body>
+</html>
