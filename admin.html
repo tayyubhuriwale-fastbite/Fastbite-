@@ -1,70 +1,64 @@
 <!DOCTYPE html><html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>FastBite Admin</title>
+<title>FastBite Admin Pro</title>
 <style>
 body{margin:0;font-family:Arial;background:#111;color:white}
-.header{background:black;color:orange;padding:15px;text-align:center;font-size:22px;font-weight:bold}
-.preview{padding:15px}
-.card{background:#222;padding:15px;border-radius:12px;margin:10px 0}
-.food-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #333}
-.food-row img{width:50px;height:50px;border-radius:8px;margin-right:10px}
-.fleft{display:flex;align-items:center}
-.fab{position:fixed;right:20px;bottom:20px;background:orange;color:white;width:60px;height:60px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:30px;cursor:pointer;box-shadow:0 0 15px rgba(255,165,0,.5)}
-.panel{position:fixed;right:-100%;top:0;width:85%;height:100%;background:#1c1c1c;transition:.3s;padding:20px;box-sizing:border-box;overflow:auto}
-.panel.show{right:0}
-button{background:orange;color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
-input{width:100%;padding:10px;margin:8px 0;border:none;border-radius:8px}
+.header{background:black;color:orange;padding:15px;text-align:center;font-size:22px;font-weight:bold;position:sticky;top:0}
+.preview{padding:15px;padding-bottom:90px}
+.card{background:#222;padding:15px;border-radius:12px;margin:12px 0}
+.food-row,.res-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #333}
+.food-left{display:flex;align-items:center;gap:10px}.food-left img{width:55px;height:55px;border-radius:10px}
+button{background:orange;color:white;border:none;padding:8px 12px;border-radius:8px;margin:2px;cursor:pointer}
+.fab{position:fixed;right:20px;bottom:20px;background:orange;color:white;width:65px;height:65px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:32px;cursor:pointer}
+.panel{position:fixed;bottom:-100%;left:0;width:100%;height:85%;background:#1b1b1b;border-top-left-radius:20px;border-top-right-radius:20px;transition:.35s;padding:20px;box-sizing:border-box;overflow:auto}
+.panel.show{bottom:0}
+input,select{width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;background:#333;color:white}
+h3{color:orange}
 </style>
 </head>
 <body>
-<div class="header" id="siteTitle">FastBite Admin</div><div class="preview">
-  <div class="card">
-    <h2>🍔 Current Foods</h2>
-    <div id="foodList"></div>
-  </div>
-  <div class="card">
-    <h2>🏪 Restaurants</h2>
-    <div id="restaurantList"></div>
-  </div>
-</div><div class="fab" onclick="togglePanel()">⚙️</div><div class="panel" id="panel">
-  <h2>Customize</h2>
-  <h3>Website Name</h3>
-  <input id="siteName" placeholder="FastBite">
-  <button onclick="saveName()">Save Name</button>  <h3>Theme Color</h3>
-  <input id="themeColor" type="color" value="#ffa500">
-  <button onclick="saveTheme()">Save Theme</button>  <h3>Add Food</h3>
-  <input id="foodName" placeholder="Food name">
-  <input id="foodPrice" placeholder="Price">
-  <input id="foodImage" placeholder="Image URL">
-  <button onclick="addFood()">Add Food</button>
-</div><script>
-let foods = JSON.parse(localStorage.getItem('foods')) || [
-{name:'Pizza',price:199,img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200',res:'Dominos'},
-{name:'Burger',price:149,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200',res:'McDonalds'}
-];
-
+<div class='header' id='siteTitle'>FastBite Admin</div>
+<div class='preview'>
+ <div class='card'><h2>🍔 Food Items</h2><div id='foodList'></div></div>
+ <div class='card'><h2>🏪 Restaurants</h2><div id='restaurantList'></div></div>
+</div>
+<div class='fab' onclick='togglePanel()'>⚙️</div>
+<div class='panel' id='panel'>
+ <h2>Customize Website</h2>
+ <h3>Website Name</h3>
+ <input id='siteName' placeholder='FastBite'>
+ <button onclick='saveName()'>Save Name</button>
+ <h3>Theme Color</h3>
+ <input id='themeColor' type='color' value='#ffa500'>
+ <button onclick='saveTheme()'>Save Theme</button>
+ <h3>Add / Edit Food</h3>
+ <input id='foodName' placeholder='Food name'>
+ <input id='foodPrice' placeholder='Price'>
+ <input id='foodImage' placeholder='Image URL'>
+ <input id='foodRes' placeholder='Restaurant'>
+ <select id='foodCategory'><option>sweets</option><option>drinks</option><option>biryani</option></select>
+ <button onclick='saveFood()'>Save Food</button>
+ <button onclick='resetForm()'>Clear</button>
+ <h3>Delivery Settings</h3>
+ <input id='minOrder' placeholder='Minimum order ₹100'>
+ <input id='smallFee' placeholder='Small fee ₹20'>
+ <button onclick='saveDelivery()'>Save Delivery</button>
+</div>
+<script>
+let editIndex=-1;
+let foods=JSON.parse(localStorage.getItem('foods'))||[];
+if(foods.length===0){foods=[{name:'Pizza',price:199,img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200',res:'Dominos',category:'sweets'},{name:'Burger',price:149,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200',res:'McDonalds',category:'sweets'}];}
 function togglePanel(){document.getElementById('panel').classList.toggle('show');}
-
-function renderFoods(){
- let html=''; let rests=new Set();
- foods.forEach((f,i)=>{rests.add(f.res||'Unknown'); html += `<div class='food-row'><div class='fleft'><img src='${f.img}'><div>${f.name}<br>₹${f.price}</div></div><button onclick='deleteFood(${i})'>Delete</button></div>`});
- document.getElementById('foodList').innerHTML=html;
- document.getElementById('restaurantList').innerHTML=[...rests].map(r=>`<div class='food-row'>${r}</div>`).join('');
- localStorage.setItem('foods', JSON.stringify(foods));
-}
-
-function addFood(){
- foods.push({name:foodName.value,price:foodPrice.value,img:foodImage.value,res:'Custom'});
- foodName.value=''; foodPrice.value=''; foodImage.value='';
- renderFoods();
-}
-function deleteFood(i){foods.splice(i,1); renderFoods();}
+function render(){let html='',rests=new Set(); foods.forEach((f,i)=>{rests.add(f.res); html+=`<div class='food-row'><div class='food-left'><img src='${f.img}'><div>${f.name}<br>₹${f.price}<br><small>${f.res}</small></div></div><div><button onclick='editFood(${i})'>Edit</button><button onclick='deleteFood(${i})'>Delete</button></div></div>`}); document.getElementById('foodList').innerHTML=html; document.getElementById('restaurantList').innerHTML=[...rests].map(r=>`<div class='res-row'>${r}</div>`).join(''); localStorage.setItem('foods',JSON.stringify(foods));}
+function saveFood(){let f={name:foodName.value,price:foodPrice.value,img:foodImage.value,res:foodRes.value,category:foodCategory.value}; if(editIndex==-1){foods.push(f)}else{foods[editIndex]=f;editIndex=-1;} resetForm(); render();}
+function editFood(i){let f=foods[i]; foodName.value=f.name; foodPrice.value=f.price; foodImage.value=f.img; foodRes.value=f.res; foodCategory.value=f.category; editIndex=i; togglePanel();}
+function deleteFood(i){foods.splice(i,1); render();}
+function resetForm(){foodName.value='';foodPrice.value='';foodImage.value='';foodRes.value='';}
 function saveName(){let n=siteName.value||'FastBite'; localStorage.setItem('siteName',n); document.getElementById('siteTitle').innerText=n+' Admin';}
-function saveTheme(){let c=themeColor.value; localStorage.setItem('themeColor',c); document.querySelector('.fab').style.background=c; document.querySelectorAll('button').forEach(b=>b.style.background=c); document.querySelector('.header').style.color=c;}
-
-document.getElementById('siteTitle').innerText=(localStorage.getItem('siteName')||'FastBite')+' Admin';
-renderFoods();
-saveTheme();
-</script></body>
+function saveTheme(){let c=themeColor.value; localStorage.setItem('themeColor',c); document.querySelector('.header').style.color=c; document.querySelector('.fab').style.background=c; document.querySelectorAll('button').forEach(b=>b.style.background=c);}
+function saveDelivery(){localStorage.setItem('minOrder',minOrder.value); localStorage.setItem('smallFee',smallFee.value); alert('Saved');}
+document.getElementById('siteTitle').innerText=(localStorage.getItem('siteName')||'FastBite')+' Admin'; render(); saveTheme();
+</script>
+</body>
 </html>
