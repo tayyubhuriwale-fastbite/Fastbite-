@@ -3,71 +3,68 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>FastBite Admin</title>
 <style>
-body{margin:0;font-family:Arial;background:#111;color:white;display:flex}
-.sidebar{width:220px;background:black;height:100vh;padding:20px;box-sizing:border-box}
-.sidebar h2{color:orange;text-align:center}
-.menu-item{padding:12px;margin:8px 0;background:#222;border-radius:10px;cursor:pointer}
-.menu-item:hover{background:orange}
-.content{flex:1;padding:20px}
-.section{display:none;background:#1c1c1c;padding:20px;border-radius:12px}
-.section.active{display:block}
-input,select{width:100%;padding:10px;margin:8px 0;border:none;border-radius:8px}
-button{background:orange;color:white;border:none;padding:10px 15px;border-radius:8px;cursor:pointer}
-.card{background:#222;padding:15px;border-radius:10px;margin:10px 0}
+body{margin:0;font-family:Arial;background:#111;color:white}
+.header{background:black;color:orange;padding:15px;text-align:center;font-size:22px;font-weight:bold}
+.preview{padding:15px}
+.card{background:#222;padding:15px;border-radius:12px;margin:10px 0}
+.food-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #333}
+.food-row img{width:50px;height:50px;border-radius:8px;margin-right:10px}
+.fleft{display:flex;align-items:center}
+.fab{position:fixed;right:20px;bottom:20px;background:orange;color:white;width:60px;height:60px;border-radius:50%;display:flex;justify-content:center;align-items:center;font-size:30px;cursor:pointer;box-shadow:0 0 15px rgba(255,165,0,.5)}
+.panel{position:fixed;right:-100%;top:0;width:85%;height:100%;background:#1c1c1c;transition:.3s;padding:20px;box-sizing:border-box;overflow:auto}
+.panel.show{right:0}
+button{background:orange;color:white;border:none;padding:8px 12px;border-radius:8px;cursor:pointer}
+input{width:100%;padding:10px;margin:8px 0;border:none;border-radius:8px}
 </style>
 </head>
 <body>
-<div class="sidebar">
-  <h2>Admin</h2>
-  <div class="menu-item" onclick="show('dashboard')">🏠 Dashboard</div>
-  <div class="menu-item" onclick="show('foods')">🍔 Foods</div>
-  <div class="menu-item" onclick="show('restaurants')">🏪 Restaurants</div>
-  <div class="menu-item" onclick="show('theme')">🎨 Theme</div>
-  <div class="menu-item" onclick="show('delivery')">🚚 Delivery</div>
-  <div class="menu-item" onclick="show('orders')">📦 Orders</div>
-  <div class="menu-item" onclick="show('history')">📜 History</div>
-  <div class="menu-item" onclick="show('settings')">⚙️ Settings</div>
-</div><div class="content">
-  <div id="dashboard" class="section active">
-    <h1>Dashboard</h1>
-    <div class="card">Total Foods: <span id="foodCount">0</span></div>
-    <div class="card">Total Restaurants: <span id="restaurantCount">0</span></div>
-  </div>  <div id="foods" class="section">
-    <h1>Food Management</h1>
-    <input id="foodName" placeholder="Food name">
-    <input id="foodPrice" placeholder="Price">
-    <input id="foodImage" placeholder="Image URL">
-    <select id="foodCategory">
-      <option>sweets</option>
-      <option>drinks</option>
-      <option>biryani</option>
-    </select>
-    <button onclick="addFood()">Add Food</button>
+<div class="header" id="siteTitle">FastBite Admin</div><div class="preview">
+  <div class="card">
+    <h2>🍔 Current Foods</h2>
     <div id="foodList"></div>
-  </div>  <div id="restaurants" class="section"><h1>Restaurant Management</h1><p>Add/edit restaurants here.</p></div>
-  <div id="theme" class="section"><h1>Theme Settings</h1><input id="themeColor" type="color" value="#ffa500"><p>Live Preview Color 🎨</p><div class="card" id="themePreview">FastBite Preview</div><button onclick="saveTheme()">Save Theme</button></div>
-  <div id="delivery" class="section"><h1>Delivery Settings</h1><p>Change delivery charges here.</p></div>
-  <div id="orders" class="section"><h1>Orders</h1><p>Live orders here.</p></div>
-  <div id="history" class="section"><h1>History</h1><p>Completed orders here.</p></div>
-  <div id="settings" class="section"><h1>Settings</h1><p>Password & app settings here.</p></div>
+  </div>
+  <div class="card">
+    <h2>🏪 Restaurants</h2>
+    <div id="restaurantList"></div>
+  </div>
+</div><div class="fab" onclick="togglePanel()">⚙️</div><div class="panel" id="panel">
+  <h2>Customize</h2>
+  <h3>Website Name</h3>
+  <input id="siteName" placeholder="FastBite">
+  <button onclick="saveName()">Save Name</button>  <h3>Theme Color</h3>
+  <input id="themeColor" type="color" value="#ffa500">
+  <button onclick="saveTheme()">Save Theme</button>  <h3>Add Food</h3>
+  <input id="foodName" placeholder="Food name">
+  <input id="foodPrice" placeholder="Price">
+  <input id="foodImage" placeholder="Image URL">
+  <button onclick="addFood()">Add Food</button>
 </div><script>
-let foods = JSON.parse(localStorage.getItem('foods')) || [];
-function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function saveFoods(){localStorage.setItem('foods', JSON.stringify(foods)); function saveTheme(){ let c=document.getElementById('themeColor').value; localStorage.setItem('themeColor', c); applyTheme(); }
-function applyTheme(){ let c=localStorage.getItem('themeColor') || '#ffa500'; document.querySelectorAll('button,.menu-item:hover').forEach(()=>{}); document.documentElement.style.setProperty('--main-color', c); document.querySelectorAll('button').forEach(b=>b.style.background=c); document.getElementById('themePreview').style.background=c; }
-renderFoods();
-applyTheme();}
-function addFood(){
- let f={name:foodName.value,price:foodPrice.value,img:foodImage.value,category:foodCategory.value};
- foods.push(f); saveFoods(); foodName.value=''; foodPrice.value=''; foodImage.value='';
-}
-function deleteFood(i){foods.splice(i,1); saveFoods();}
+let foods = JSON.parse(localStorage.getItem('foods')) || [
+{name:'Pizza',price:199,img:'https://images.unsplash.com/photo-1513104890138-7c749659a591?w=200',res:'Dominos'},
+{name:'Burger',price:149,img:'https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=200',res:'McDonalds'}
+];
+
+function togglePanel(){document.getElementById('panel').classList.toggle('show');}
+
 function renderFoods(){
- document.getElementById('foodCount').innerText=foods.length;
- let html='';
- foods.forEach((f,i)=> html += `<div class='card'>${f.name} - ₹${f.price} <button onclick='deleteFood(${i})'>Delete</button></div>`);
+ let html=''; let rests=new Set();
+ foods.forEach((f,i)=>{rests.add(f.res||'Unknown'); html += `<div class='food-row'><div class='fleft'><img src='${f.img}'><div>${f.name}<br>₹${f.price}</div></div><button onclick='deleteFood(${i})'>Delete</button></div>`});
  document.getElementById('foodList').innerHTML=html;
+ document.getElementById('restaurantList').innerHTML=[...rests].map(r=>`<div class='food-row'>${r}</div>`).join('');
+ localStorage.setItem('foods', JSON.stringify(foods));
 }
+
+function addFood(){
+ foods.push({name:foodName.value,price:foodPrice.value,img:foodImage.value,res:'Custom'});
+ foodName.value=''; foodPrice.value=''; foodImage.value='';
+ renderFoods();
+}
+function deleteFood(i){foods.splice(i,1); renderFoods();}
+function saveName(){let n=siteName.value||'FastBite'; localStorage.setItem('siteName',n); document.getElementById('siteTitle').innerText=n+' Admin';}
+function saveTheme(){let c=themeColor.value; localStorage.setItem('themeColor',c); document.querySelector('.fab').style.background=c; document.querySelectorAll('button').forEach(b=>b.style.background=c); document.querySelector('.header').style.color=c;}
+
+document.getElementById('siteTitle').innerText=(localStorage.getItem('siteName')||'FastBite')+' Admin';
 renderFoods();
+saveTheme();
 </script></body>
 </html>
