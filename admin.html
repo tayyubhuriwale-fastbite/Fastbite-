@@ -45,7 +45,7 @@ button{background:orange;color:white;border:none;padding:10px 15px;border-radius
     <button onclick="addFood()">Add Food</button>
     <div id="foodList"></div>
   </div>  <div id="restaurants" class="section"><h1>Restaurant Management</h1><p>Add/edit restaurants here.</p></div>
-  <div id="theme" class="section"><h1>Theme Settings</h1><p>Color/theme controls here.</p></div>
+  <div id="theme" class="section"><h1>Theme Settings</h1><input id="themeColor" type="color" value="#ffa500"><p>Live Preview Color 🎨</p><div class="card" id="themePreview">FastBite Preview</div><button onclick="saveTheme()">Save Theme</button></div>
   <div id="delivery" class="section"><h1>Delivery Settings</h1><p>Change delivery charges here.</p></div>
   <div id="orders" class="section"><h1>Orders</h1><p>Live orders here.</p></div>
   <div id="history" class="section"><h1>History</h1><p>Completed orders here.</p></div>
@@ -53,7 +53,10 @@ button{background:orange;color:white;border:none;padding:10px 15px;border-radius
 </div><script>
 let foods = JSON.parse(localStorage.getItem('foods')) || [];
 function show(id){document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));document.getElementById(id).classList.add('active');}
-function saveFoods(){localStorage.setItem('foods', JSON.stringify(foods)); renderFoods();}
+function saveFoods(){localStorage.setItem('foods', JSON.stringify(foods)); function saveTheme(){ let c=document.getElementById('themeColor').value; localStorage.setItem('themeColor', c); applyTheme(); }
+function applyTheme(){ let c=localStorage.getItem('themeColor') || '#ffa500'; document.querySelectorAll('button,.menu-item:hover').forEach(()=>{}); document.documentElement.style.setProperty('--main-color', c); document.querySelectorAll('button').forEach(b=>b.style.background=c); document.getElementById('themePreview').style.background=c; }
+renderFoods();
+applyTheme();}
 function addFood(){
  let f={name:foodName.value,price:foodPrice.value,img:foodImage.value,category:foodCategory.value};
  foods.push(f); saveFoods(); foodName.value=''; foodPrice.value=''; foodImage.value='';
