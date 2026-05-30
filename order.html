@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Order</title>
+<title>Premium Order Page</title>
 
 <style>
 
@@ -36,7 +36,7 @@ body{
   padding:15px;
 }
 
-/* ORDER ITEMS */
+/* ITEMS */
 
 .item{
   display:flex;
@@ -51,7 +51,7 @@ body{
 
 .item:hover{
   transform:translateY(-2px);
-  box-shadow:0 0 15px rgba(255,122,0,0.15);
+  box-shadow:0 0 15px rgba(255,122,0,0.2);
 }
 
 .item img{
@@ -62,7 +62,7 @@ body{
   object-fit:cover;
 }
 
-/* BOXES */
+/* BOX */
 
 .box{
   background:#1c1c1c;
@@ -72,7 +72,7 @@ body{
   border:1px solid rgba(255,122,0,0.15);
 }
 
-/* INPUTS */
+/* INPUT */
 
 input{
   width:100%;
@@ -90,7 +90,7 @@ input:focus{
   border:1px solid orange;
 }
 
-/* BUTTONS */
+/* BUTTON */
 
 button{
   width:100%;
@@ -105,10 +105,6 @@ button{
   transition:0.25s;
 }
 
-button:hover{
-  transform:scale(1.02);
-}
-
 button:active{
   transform:scale(0.96);
 }
@@ -119,6 +115,8 @@ button:active{
   font-size:20px;
   font-weight:bold;
 }
+
+/* REMOVE BUTTON */
 
 .removeBtn{
   width:auto;
@@ -144,7 +142,7 @@ button:active{
   margin:0;
 }
 
-/* HISTORY PANEL */
+/* HISTORY */
 
 #historyPanel{
   position:fixed;
@@ -187,19 +185,14 @@ button:active{
   border-radius:25px;
   text-align:center;
   border:2px solid orange;
-  animation:pop 0.4s ease;
   width:85%;
   max-width:320px;
+  animation:pop 0.4s ease;
   box-shadow:0 0 30px rgba(255,122,0,0.4);
 }
 
 .popupBox h1{
   color:orange;
-  margin-bottom:10px;
-}
-
-.popupBox p{
-  color:#ddd;
 }
 
 @keyframes pop{
@@ -213,6 +206,51 @@ button:active{
     opacity:1;
   }
 }
+
+/* TRACKING */
+
+.trackBar{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  margin-top:20px;
+  overflow-x:auto;
+}
+
+.step{
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  font-size:22px;
+  color:#666;
+  min-width:60px;
+  transition:0.3s;
+}
+
+.step span{
+  font-size:12px;
+  margin-top:5px;
+}
+
+.active{
+  color:orange;
+  transform:scale(1.1);
+}
+
+.line{
+  height:4px;
+  flex:1;
+  background:#333;
+  margin:0 5px;
+  border-radius:10px;
+}
+
+.activeLine{
+  background:orange;
+  box-shadow:0 0 10px orange;
+}
+
+/* LOADING */
 
 .loadingScreen{
   text-align:center;
@@ -242,6 +280,44 @@ button:active{
 
 <div id="items"></div>
 
+<!-- TRACKING -->
+
+<div class="box">
+
+<h3>🚴 Live Order Tracking</h3>
+
+<div class="trackBar">
+
+  <div class="step active">
+    ✅
+    <span>Placed</span>
+  </div>
+
+  <div class="line activeLine"></div>
+
+  <div class="step">
+    👨‍🍳
+    <span>Preparing</span>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="step">
+    🚴
+    <span>Delivery</span>
+  </div>
+
+  <div class="line"></div>
+
+  <div class="step">
+    🎉
+    <span>Done</span>
+  </div>
+
+</div>
+
+</div>
+
 <div class="box">
   <h3>📍 Delivery Details</h3>
 
@@ -251,6 +327,7 @@ button:active{
 </div>
 
 <div class="box">
+
   <h3>🚀 Delivery Info</h3>
 
   <p>0–2 km → ₹20</p>
@@ -261,6 +338,7 @@ button:active{
 
   <p>Delivery charges will be confirmed on call</p>
   <p>Location ke hisaab se delivery charge final hoga</p>
+
 </div>
 
 <div class="box">
@@ -311,7 +389,7 @@ button:active{
 
 </div>
 
-<!-- SUCCESS POPUP -->
+<!-- POPUP -->
 
 <div id="successPopup">
   <div class="popupBox">
@@ -343,27 +421,30 @@ let total=0;
 
 cart.forEach((item,i)=>{
 
-  total += item.price;
+total += item.price;
 
-  html += `
-  <div class="item">
+html += `
 
-    <img src="${item.img}">
+<div class="item">
 
-    <div style="flex:1">
+  <img src="${item.img}">
 
-      <h4>${item.name}</h4>
+  <div style="flex:1">
 
-      <p style="color:orange;">₹${item.price}</p>
+    <h4>${item.name}</h4>
 
-    </div>
-
-    <button class="removeBtn" onclick="removeItem(${i})">
-      Remove
-    </button>
+    <p style="color:orange;">₹${item.price}</p>
 
   </div>
-  `;
+
+  <button class="removeBtn" onclick="removeItem(${i})">
+    Remove
+  </button>
+
+</div>
+
+`;
+
 });
 
 document.getElementById("items").innerHTML = html;
@@ -411,9 +492,10 @@ document.querySelector('input[name="payment"]:checked')?.value;
 
 if(!address || !phone || !payment || cart.length==0){
 
-  alert("Fill all details");
+alert("Fill all details");
 
-  return;
+return;
+
 }
 
 /* ITEMS */
@@ -452,11 +534,9 @@ Delivery: Confirm on call
 
 📢 Please tap SEND to confirm your order`;
 
-/* NUMBER */
-
 let number = "919529785348";
 
-/* SHOW POPUP */
+/* POPUP */
 
 document.getElementById("successPopup").style.display="flex";
 
@@ -480,11 +560,44 @@ navigator.vibrate([200,100,200]);
 
 }
 
+/* TRACKING */
+
+setTimeout(()=>{
+
+document.querySelectorAll(".step")[1].classList.add("active");
+document.querySelectorAll(".line")[1].classList.add("activeLine");
+
+showNotify("👨‍🍳 Your food is being prepared");
+
+},3000);
+
+setTimeout(()=>{
+
+document.querySelectorAll(".step")[2].classList.add("active");
+document.querySelectorAll(".line")[2].classList.add("activeLine");
+
+showNotify("🚴 Rider is on the way");
+
+},6000);
+
+setTimeout(()=>{
+
+document.querySelectorAll(".step")[3].classList.add("active");
+
+showNotify("🎉 Order Delivered");
+
+confetti({
+  particleCount:120,
+  spread:100
+});
+
+},10000);
+
 /* CLEAR CART */
 
 localStorage.removeItem("cart");
 
-/* LOADING SCREEN */
+/* LOADING */
 
 setTimeout(()=>{
 
@@ -492,9 +605,9 @@ document.body.innerHTML = `
 
 <div class="loadingScreen">
 
-  <h2>🚀 Placing your order...</h2>
+<h2>🚀 Placing your order...</h2>
 
-  <p>Opening WhatsApp 📲</p>
+<p>Opening WhatsApp 📲</p>
 
 </div>
 
@@ -510,6 +623,36 @@ window.location.href =
 `https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
 
 },3500);
+
+}
+
+/* NOTIFICATION */
+
+function showNotify(text){
+
+let div=document.createElement("div");
+
+div.innerText=text;
+
+div.style.position="fixed";
+div.style.top="20px";
+div.style.left="50%";
+div.style.transform="translateX(-50%)";
+div.style.background="orange";
+div.style.color="white";
+div.style.padding="12px 20px";
+div.style.borderRadius="12px";
+div.style.zIndex="99999";
+div.style.fontWeight="bold";
+div.style.boxShadow="0 0 20px rgba(255,165,0,0.5)";
+
+document.body.appendChild(div);
+
+document.getElementById("successSound").play();
+
+setTimeout(()=>{
+div.remove();
+},2500);
 
 }
 
