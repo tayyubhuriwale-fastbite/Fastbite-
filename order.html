@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+
+  
+  <link rel="stylesheet"
+href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+  
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Premium Order Page</title>
 
@@ -292,7 +299,15 @@ button:active{
     ✅
     <span>Placed</span>
   </div>
+<div class="box">
 
+<h3>🗺️ Rider Live Map</h3>
+
+<div id="map"
+style="height:300px;border-radius:18px;">
+</div>
+
+</div>
   <div class="line activeLine"></div>
 
   <div class="step">
@@ -480,7 +495,17 @@ location.reload();
 /* PLACE ORDER */
 
 function placeOrder(){
+/* POPUP */
 
+document.getElementById("successPopup")
+.style.display="flex";
+setTimeout(()=>{
+
+document.getElementById("successPopup")
+.style.display="none";
+
+},3000);
+startOrderTimer();
 let address =
 document.getElementById("address").value;
 
@@ -780,6 +805,32 @@ document.getElementById("orderTimer")
 },1000);
 
 }
+  /* MAP */
+
+let map = L.map('map')
+.setView([18.5308,73.8475],13);
+
+L.tileLayer(
+'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
+{
+attribution:'© OpenStreetMap'
+}
+).addTo(map);
+
+let rider = L.marker([18.5308,73.8475])
+.addTo(map);
+
+let lat = 18.5308;
+let lng = 73.8475;
+
+setInterval(()=>{
+
+lat += 0.0005;
+lng += 0.0005;
+
+rider.setLatLng([lat,lng]);
+
+},4000);
 </script>
 
 </body>
