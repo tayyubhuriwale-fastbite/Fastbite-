@@ -592,7 +592,38 @@ confetti({
 });
 
 },10000);
+<!-- MY ORDER LIVE -->
 
+<div class="box">
+
+<h3>📦 My Order Live Status</h3>
+
+<div id="orderTimer"
+style="font-size:20px;color:orange;font-weight:bold;">
+Waiting for order...
+</div>
+
+<div style="margin-top:15px;">
+
+<div class="step" id="s1">
+✅ Order Placed
+</div>
+
+<div class="step" id="s2">
+👨‍🍳 Preparing
+</div>
+
+<div class="step" id="s3">
+🚴 Rider Coming
+</div>
+
+<div class="step" id="s4">
+🎉 Delivered
+</div>
+
+</div>
+
+</div>me 
 /* CLEAR CART */
 
 localStorage.removeItem("cart");
@@ -619,8 +650,10 @@ document.body.innerHTML = `
 
 setTimeout(()=>{
 
-window.location.href =
-`https://wa.me/${number}?text=${encodeURIComponent(msg)}`;
+window.open(
+`https://wa.me/${number}?text=${encodeURIComponent(msg)}`,
+"_blank"
+);
 
 },3500);
 
@@ -681,7 +714,72 @@ window.history.back();
 /* START */
 
 showItems();
+/* MY ORDER TIMER */
 
+let totalTime = 600;
+let current = totalTime;
+let timerStarted = false;
+
+function startOrderTimer(){
+
+if(timerStarted) return;
+
+timerStarted = true;
+
+let t = setInterval(()=>{
+
+let min = Math.floor(current/60);
+let sec = current%60;
+
+document.getElementById("orderTimer").innerText =
+"Arriving in: " + min + ":" +
+(sec<10?"0":"") + sec;
+
+current--;
+
+/* 10 sec preparing */
+if(current == 590){
+
+document.getElementById("s2")
+.classList.add("active");
+
+showNotify("👨‍🍳 Preparing your food");
+
+}
+
+/* 5 min rider */
+if(current == 300){
+
+document.getElementById("s3")
+.classList.add("active");
+
+showNotify("🚴 Rider is on the way");
+
+}
+
+/* delivered */
+if(current == 0){
+
+clearInterval(t);
+
+document.getElementById("s4")
+.classList.add("active");
+
+showNotify("🎉 Order Delivered");
+
+confetti({
+particleCount:120,
+spread:100
+});
+
+document.getElementById("orderTimer")
+.innerText = "🎉 Delivered";
+
+}
+
+},1000);
+
+}
 </script>
 
 </body>
