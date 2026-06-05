@@ -121,6 +121,66 @@ header {
   font-size: 16px;
   font-weight: bold;
 }
+  .banner-slider{
+margin:15px;
+position:relative;
+height:80px;
+overflow:hidden;
+}
+
+.banner{
+position:absolute;
+width:100%;
+height:80px;
+background:linear-gradient(45deg,#ff7a00,#ff3d00);
+border-radius:18px;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:20px;
+font-weight:bold;
+opacity:0;
+transform:scale(0.9);
+transition:0.5s;
+box-shadow:0 0 20px rgba(255,120,0,0.4);
+}
+
+.activeBanner{
+opacity:1;
+transform:scale(1);
+}
+
+.category-row{
+display:flex;
+gap:12px;
+overflow:auto;
+padding:10px 15px;
+}
+
+.cat-btn{
+min-width:100px;
+background:rgba(255,255,255,0.15);
+padding:12px;
+border-radius:16px;
+text-align:center;
+backdrop-filter:blur(5px);
+font-weight:bold;
+transition:0.3s;
+}
+
+.cat-btn:hover{
+transform:scale(1.05);
+background:orange;
+}
+
+.res-card{
+transition:0.3s;
+}
+
+.res-card:hover{
+transform:translateY(-5px);
+box-shadow:0 0 20px rgba(255,165,0,0.3);
+}
 </style>
 
 </head>
@@ -140,7 +200,34 @@ header {
 
 <!-- Search -->
 <input class="search" placeholder="Search food...">
+<div class="banner-slider">
 
+<div class="banner activeBanner">
+🎉 50% OFF on First Order
+</div>
+
+<div class="banner">
+🍔 Free Delivery Above ₹299
+</div>
+
+<div class="banner">
+🔥 Fast Delivery in 20 Minutes
+</div>
+
+</div>
+  <div class="category-row">
+
+<div class="cat-btn">🍕 Pizza</div>
+
+<div class="cat-btn">🍔 Burger</div>
+
+<div class="cat-btn">🥤 Drinks</div>
+
+<div class="cat-btn">🍰 Sweets</div>
+
+<div class="cat-btn">🍛 Biryani</div>
+
+</div>
 <!-- Restaurants -->
 <div class="restaurants">
   <div class="res-card">Restaurant 1 ⭐4.5</div>
@@ -168,7 +255,28 @@ header {
 <!-- ✅ FIXED SCRIPT -->
 <script>
 window.onload = function() {
+let banners =
+document.querySelectorAll(".banner");
 
+let currentBanner = 0;
+
+setInterval(()=>{
+
+banners[currentBanner]
+.classList.remove("activeBanner");
+
+currentBanner++;
+
+if(currentBanner>=banners.length){
+
+currentBanner=0;
+
+}
+
+banners[currentBanner]
+.classList.add("activeBanner");
+
+},2500);
   setTimeout(() => {
     document.getElementById("splash").style.display = "none";
   }, 1500);
