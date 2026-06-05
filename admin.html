@@ -15,11 +15,69 @@ button{background:orange;color:white;border:none;padding:8px 12px;border-radius:
 .panel.show{bottom:0}
 input,select{width:100%;padding:12px;margin:8px 0;border:none;border-radius:10px;background:#333;color:white}
 h3{color:orange}
+ .searchBox input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:14px;
+background:#222;
+color:white;
+margin-bottom:15px;
+font-size:15px;
+}
+
+.categories{
+display:flex;
+gap:10px;
+overflow:auto;
+margin-bottom:18px;
+}
+
+.categories button{
+white-space:nowrap;
+padding:10px 18px;
+border-radius:30px;
+font-size:14px;
+}
+
+.food-row{
+transition:0.3s;
+}
+
+.food-row:hover{
+transform:scale(1.02);
+box-shadow:0 0 15px rgba(255,165,0,0.25);
+}
 </style>
 </head>
 <body>
 <div class='header' id='siteTitle'>FastBite Admin</div>
 <div class='preview'>
+ <div class="searchBox">
+<input type="text"
+id="searchInput"
+placeholder="🔍 Search food..."
+onkeyup="searchFood()">
+</div>
+ <div class="categories">
+
+<button onclick="filterCategory('all')">
+🍽 All
+</button>
+
+<button onclick="filterCategory('biryani')">
+🍛 Biryani
+</button>
+
+<button onclick="filterCategory('drinks')">
+🥤 Drinks
+</button>
+
+<button onclick="filterCategory('sweets')">
+🍰 Sweets
+</button>
+
+</div>
  <div class='card'><h2>🍔 Food Items</h2><div id='foodList'></div></div>
  <div class='card'><h2>🏪 Restaurants</h2><div id='restaurantList'></div></div>
 </div>
@@ -58,7 +116,54 @@ function resetForm(){foodName.value='';foodPrice.value='';foodImage.value='';foo
 function saveName(){let n=siteName.value||'FastBite'; localStorage.setItem('siteName',n); document.getElementById('siteTitle').innerText=n+' Admin';}
 function saveTheme(){let c=themeColor.value; localStorage.setItem('themeColor',c); document.querySelector('.header').style.color=c; document.querySelector('.fab').style.background=c; document.querySelectorAll('button').forEach(b=>b.style.background=c);}
 function saveDelivery(){localStorage.setItem('minOrder',minOrder.value); localStorage.setItem('smallFee',smallFee.value); alert('Saved');}
-document.getElementById('siteTitle').innerText=(localStorage.getItem('siteName')||'FastBite')+' Admin'; render(); saveTheme();
+document.getElementById('siteTitle').innerText=(localStorage.getItem('siteName')||'FastBite')+' Admin';
+ function searchFood(){
+
+let value =
+document.getElementById("searchInput")
+.value.toLowerCase();
+
+let rows =
+document.querySelectorAll(".food-row");
+
+rows.forEach(r=>{
+
+if(r.innerText.toLowerCase()
+.includes(value)){
+
+r.style.display="flex";
+
+}else{
+
+r.style.display="none";
+
+}
+
+});
+
+}
+
+function filterCategory(cat){
+
+let rows =
+document.querySelectorAll(".food-row");
+
+foods.forEach((f,i)=>{
+
+if(cat=="all" || f.category==cat){
+
+rows[i].style.display="flex";
+
+}else{
+
+rows[i].style.display="none";
+
+}
+
+});
+
+}
+ render(); saveTheme();
 </script>
 </body>
 </html>
